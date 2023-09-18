@@ -6,6 +6,7 @@ import { Veterinarias } from "./veterinaria";
 import { Cliente } from "./cliente";
 import { Paciente } from "./paciente";
 
+
 //Aqui implementamos la clase "Veterinarias" :
 let miVeterinaria:Veterinarias=new Veterinarias();
 //-----------------------------------------------------------------------------------------------------
