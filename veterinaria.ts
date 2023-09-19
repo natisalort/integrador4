@@ -24,21 +24,27 @@ export class Veterinarias {
     }
     //-----------------------------------------------------------------------------------------------
     public agregarProductosAlCatalogo() {
-        let dogchow = new Producto("dog chow", "Alimento para perros 20kg.", "alimentos", 3000,)
+        let dogchow = new Producto("Dog chow", "Alimento para perros 20kg.", "alimentos", 3000, 50)
         this.prodAlimentos.push(dogchow);
 
-        let shampoo = new Producto("Limpito", "Shampoo para perros y gatos 500cc.", "higiene", 1500)
+        let shampoo = new Producto("Limpito", "Shampoo para perros y gatos 500cc.", "higiene", 1500, 20)
         this.prodHigiene.push(shampoo);
 
-        let pipeta = new Producto("FronLine", "Pipeta `para perros de hasta 20 kg.", "salud", 2000)
+        let pipeta = new Producto("Frontline", "Pipeta `para perros de hasta 20 kg.", "salud", 2000, 30)
         this.prodSalud.push(pipeta);
     }
     //--------------------------------------------------------------------------------------------------
     public crearSucursal(nombreSucursal: string, direccion: string, telefono: number) {
-        let idSucursal= Math.floor(Math.random() * 100);//Se genera un numero aleatorio hasta el 100.
-
-
-        this.sucursales.push(new Sucursal(nombreSucursal, direccion, telefono,idSucursal));// aqui directamente creamos una sucursal (con los parametros pasados y automaticamente se guarda en la lista de "sucursales.")
+        let idSucursal = 0;
+        while (idSucursal == 0) {
+            idSucursal = Math.floor(Math.random() * 100);//Se genera un numero aleatorio hasta el 100.
+            this.getSucursales().forEach(sucursal => {
+                if (sucursal.getIdSucursal() == idSucursal) { //Chekea si se repite el numero generado.
+                    idSucursal = 0;
+                }
+            })
+        }
+        this.sucursales.push(new Sucursal(nombreSucursal, direccion, telefono, idSucursal));// aqui directamente creamos una sucursal (con los parametros pasados y automaticamente se guarda en la lista de "sucursales.")
         console.log("--------SE HA CREADO LA SUCURSAL DE BARRIO ", nombreSucursal, "-------");
     }
     //-----------------------------------------------------------------------------------------------
@@ -75,14 +81,14 @@ export class Veterinarias {
 
 
     public buscarSucursal_por_Id(): Sucursal {
-        let existe=false;
+        let existe = false;
         let numSucursal = 0;     //Aqui nos aseguramos que el ID ingresado sea correcto.
-        while (existe== false) {
-            numSucursal = readline.question("**Ingrese el numero ID de la sucursal seleccionada : ");
-            existe= this.chequear_Id_Sucursal_Existe(numSucursal);
+        while (existe == false) {
+            numSucursal = readline.questionInt("**Ingrese el numero ID de la sucursal seleccionada : ");
+            existe = this.chequear_Id_Sucursal_Existe(numSucursal);
         }
 
-        let sucursalElegida: Sucursal = new Sucursal("", "", 0,0);
+        let sucursalElegida: Sucursal = new Sucursal("", "", 0, 0);
         this.sucursales.forEach(sucursal => {
             if (sucursal.getIdSucursal() == numSucursal) {
                 sucursalElegida = sucursal;
@@ -95,8 +101,10 @@ export class Veterinarias {
 
     public eliminarSucursal() {
         //Aqui "indice" guardara la posicion en la que se encuentra la sucursal.
-        let indice = this.getSucursales().indexOf(this.buscarSucursal_por_Id())
+        let indice = this.getSucursales().indexOf(this.buscarSucursal_por_Id());
+        let sucursalEliminada = this.getSucursales()[indice].getNombreSucursal()
         this.getSucursales().splice(indice, 1);
+        console.log("      !! SE HA ELIMINADO LA SUCURSAL : ", sucursalEliminada);
 
     }
 
@@ -127,62 +135,60 @@ export class Veterinarias {
     }
 
     public enviarProductos_a_sucursal() {
-        let sucursalDestino=this.buscarSucursal_por_Id();
+        let sucursalDestino = this.buscarSucursal_por_Id();//Selecciona una sucursal y la trae para modificar su lista de productos disponibles.
 
-        let listaProductos: Producto[] = [];  //Aqui creamos un array donde guardaremos tosos los productos que se enviaron.
         let cantidadTotalDeEnvios = readline.questionInt("Ingrese la cantidad total de envios que desea realizar : ");
         while (cantidadTotalDeEnvios > 0) {
 
             let categoriaDelEnvio = readline.question("INGRESE LA CATEGORIA DEL PRODUCTO QUE SE ENVIARA A SUCURSAL : ----").toLowerCase();// Convierte todo el texto a minuscula.
             let nombreProducto = readline.question("INGRESE NOMBRE DEL PRODUCTO QUE ENVIA A SUCURSAL : ----");
-            nombreProducto=nombreProducto.charAt(0).toUpperCase() + nombreProducto.slice(1).toLowerCase();  //Convierte la primera letra a mayuscula. Esto es necesario para buscar en la lista de productos, el nombre que siempre estara en mayuscula.
+            nombreProducto = nombreProducto.charAt(0).toUpperCase() + nombreProducto.slice(1).toLowerCase();  //Convierte la primera letra a mayuscula. Esto es necesario para buscar en la lista de productos, el nombre que siempre estara en mayuscula.
             let cantidad_a_Enviar = readline.questionInt("CANTIDAD A ENVIAR DE ESTE PRODUCTO : ----");
 
             switch (categoriaDelEnvio) {
                 case "alimentos":
                     this.prodAlimentos.forEach(prod => {
                         if (prod.getNombreProd() == nombreProducto) {
-                            listaProductos.push(prod);
+                            sucursalDestino.getProductosDisponibles().push(prod);
                             cantidadTotalDeEnvios -= cantidad_a_Enviar;
+                            prod.setAgregarProductos(cantidad_a_Enviar);
+                            console.log("     SE ENVIARON A SUCURSAL ", sucursalDestino.getNombreSucursal(), " : ", cantidad_a_Enviar, prod.getNombreProd())
                         }
                     })
                     break;
                 case "salud":
                     this.prodSalud.forEach(prod => {
                         if (prod.getNombreProd() == nombreProducto) {
-                            listaProductos.push(prod);
+                            sucursalDestino.getProductosDisponibles().push(prod);
                             cantidadTotalDeEnvios -= cantidad_a_Enviar;
+                            prod.setAgregarProductos(cantidad_a_Enviar);
+                            console.log("      SE ENVIARON A SUCURSAL ", sucursalDestino.getNombreSucursal(), " : ", cantidad_a_Enviar, prod.getNombreProd())
+
                         }
                     })
                     break;
                 case "higiene":
                     this.prodHigiene.forEach(prod => {
                         if (prod.getNombreProd() == nombreProducto) {
-                            listaProductos.push(prod);
+                            sucursalDestino.getProductosDisponibles().push(prod);
                             cantidadTotalDeEnvios -= cantidad_a_Enviar;
+                            prod.setAgregarProductos(cantidad_a_Enviar);
+                            console.log("     SE ENVIARON A SUCURSAL ", sucursalDestino.getNombreSucursal(), " : ", cantidad_a_Enviar, prod.getNombreProd())
+
                         }
                     })
                     break;
             }
-            sucursalDestino.getProductosDisponibles().push(listaProductos);
-            console.log("//////////////////////////////////////////////////////////////////////////////////")
-            console.log("PRODUCTOS DISPONIBLES EN SUCURSAL  ",sucursalDestino.getNombreSucursal()," :  ");
-            console.log("-----------------------------------------------------------------------------------")
-
-            console.log(sucursalDestino.mostrarProductos());
-            console.log("//////////////////////////////////////////////////////////////////////////////////")
-            /*for (let sucursal in this.sucursales) {
-                if (this.sucursales[sucursal].idSucursal == sucrsalDestino.get) {
-                    this.sucursales[sucursal].productosDisponibles_en_sucursal.push(listaProductos);
-                    console.log("          Productos enviados a sucursal ", this.sucursales[sucursal].getNombreSucursal(), " : ", this.sucursales[sucursal].productosDisponibles_en_sucursal[0]);
-                }
-            }*/
         }
+        console.log("//////////////////////////////////////////////////////////////////////////////////")
+        console.log("PRODUCTOS DISPONIBLES EN SUCURSAL  ", sucursalDestino.getNombreSucursal(), " :  ");
+        console.log("-----------------------------------------------------------------------------------")
+
+        console.log(sucursalDestino.mostrarProductos());
+        console.log("//////////////////////////////////////////////////////////////////////////////////")
     }
 
     public getSucursales() {
         return this.sucursales;
     }
 }
-
-
