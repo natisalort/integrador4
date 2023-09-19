@@ -1,9 +1,9 @@
 import * as readline from "readline-sync"
 
-import { Producto } from "./producto";
-import { Proveedor } from "./proveedor";
-import { Veterinarias } from "./veterinaria";
-import { Cliente } from "./cliente";
+import { Producto } from "./productos";
+import { Proveedor } from "./proveedores";
+import { Veterinarias } from "./veterinarias";
+import { Cliente } from "./clientes";
 import { Paciente } from "./paciente";
 
 export class Sucursal {
@@ -11,27 +11,26 @@ export class Sucursal {
     public idSucursal: number;
     private direccion: string;
     private telefono: number;
-    productosDisponibles_en_sucursal: Producto[][];
+    productosDisponibles_en_sucursal: Producto[];
     clientes: Cliente[];
 
     constructor(nombreSucursal: string, direccion: string, telefono: number, idSucursal: number) {
-
         this.nombreSucursal = nombreSucursal;
         this.direccion = direccion;
         this.telefono = telefono;
         this.idSucursal = idSucursal;
         this.clientes = [];
         this.productosDisponibles_en_sucursal = [];
-
     }
+    //-----------------------------------------------------------------------------------------------------------------------
+
     public mostrarProductos() {
-        this.productosDisponibles_en_sucursal[0].forEach(producto => {
-            console.log(producto.getNombreProd());
-            console.log(producto.getDescripcion());
-            console.log(producto.getPrecio());
+        this.productosDisponibles_en_sucursal.forEach(producto => {
+            console.log("          ", producto.getNombreProd());
+            console.log("----", producto.getDescripcion());
+            console.log("----Precio por unidad : $", producto.getPrecio());
+            console.log("----Cantidad disponible : ", producto.getCantidadDisponible());
             console.log("------------------------------------------------------------------")
-
-
         })
     }
 
@@ -43,7 +42,7 @@ export class Sucursal {
         nombreDueno = nombreDueno.charAt(0).toUpperCase() + nombreDueno.slice(1);
         let apellidoDueno = readline.question("  *Apellido : ");
         apellidoDueno = apellidoDueno.charAt(0).toUpperCase() + apellidoDueno.slice(1);
-        let telefonoDueno = readline.question("  *Telefono  :");
+        let telefonoDueno = readline.questionInt("  *Telefono  :");
         let direccionDueno = readline.question("  *Direccion  :");
         direccionDueno = direccionDueno.charAt(0).toUpperCase() + direccionDueno.slice(1);
 
@@ -57,12 +56,12 @@ export class Sucursal {
             })
         }
         let nuevoCliente: Cliente = new Cliente(this.getNombreSucursal(), this.getIdSucursal(), nombreDueno, apellidoDueno, telefonoDueno, direccionDueno, idAsignado);
-        nuevoCliente.crearPaciente()
+        nuevoCliente.getPaciente().push(nuevoCliente.crearPaciente())
         this.clientes.push(nuevoCliente);
         this.mostrarListaClientes();
     }
 
-    mostrarListaClientes() {
+    public mostrarListaClientes() {
         console.log("------------------------------------------------------------------")
         console.log("            LISTA DE CLIENTES DE LA SUCURSAL : ", this.getNombreSucursal());
         console.log("-----------------------------------------------------------------")
@@ -71,11 +70,10 @@ export class Sucursal {
             console.log("--Nombre de cliente : ", cliente.getNombreCliente(), ", ", cliente.getApellidoCliente());
             console.log("--Sucursal perteneciente : ", "ID : ", cliente.getSucursalId(), " --", cliente.getPerteneceSucursal());
             console.log("--VIP : ", cliente.getVip());
-            console.log("--Paciente : ", cliente.paciente);
+            console.log("--ID Cliente : ", cliente.getIdCliente());
+            console.log("--Paciente : ", cliente.pacientes);
         })
     }
-
-
 
     public eliminarCliente(persona: Cliente) {
         this.clientes.forEach(cliente => {
