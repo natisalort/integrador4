@@ -13,7 +13,7 @@ export class Cliente {
     perteneceSucursal: string
     visitas: number;
     vip: boolean;
-    paciente: Paciente;   //Objeto con los datos del animal.
+    pacientes: Paciente[];   //Objeto con los datos del animal.
 
     constructor(nombreSucursal: string, idSucursal: number, nombreDueño: string, apellido: string, telefono: number, direccion: string, idCliente: number) {
 
@@ -26,12 +26,13 @@ export class Cliente {
         this.perteneceSucursal = nombreSucursal;
         this.visitas = 0;
         this.vip = false;
+        this.pacientes = []
 
     }
 
 
 
-    crearPaciente() {
+    crearPaciente(): Paciente {
         console.log("************************************************");
         console.log("          **DATOS DEL PACIENTE : ");
         console.log("************************************************");
@@ -39,8 +40,9 @@ export class Cliente {
         nomb = nomb.charAt(0) + nomb.slice(1).toLowerCase();
         let especie = readline.question(" *Especie/raza :  ");
         especie = especie.charAt(0) + especie.slice(1).toLowerCase();
-        let edadAnimal = readline.question(" *Edad del animal :  ");
-        this.paciente = new Paciente(nomb, especie, edadAnimal, this.idCliente);
+        let edadAnimal = readline.questionInt(" *Edad del animal :  ");
+        let paciente: Paciente = new Paciente(nomb, especie, edadAnimal, this.idCliente);
+        return paciente
     }
 
     modificarCliente(miVeterinaria) {
@@ -62,7 +64,8 @@ export class Cliente {
                 }
                 break;
             case 2:
-                let sucursalDestino = miVeterinaria.buscarSucursal_por_Id();
+                let sucursalDestino: Sucursal = miVeterinaria.buscarSucursal_por_Id();
+                let exSucursal=this.perteneceSucursal;
                 this.perteneceSucursal = sucursalDestino.getNombreSucursal();
                 this.idSucursalPerteneciente = sucursalDestino.getIdSucursal();
                 sucursalDestino.getClientes().push(this);  //AQUI AGREGA EL CLIENTE A LA LISTA DE CLIENTES DE LA SUCURSAL ELEGIDA.
@@ -72,13 +75,18 @@ export class Cliente {
                     if (sucursal.getIdSucursal() == this.getSucursalId()) {
                         let borrar = sucursal.getClientes().indexOf(this);
                         sucursal.getClientes().splice(borrar, 1);
-                        console.log("SE HA ELIMINADO DE LA SUCURSAL ", sucursal.getNombreSucursal(), "  EL CIENTE :  ", this.getNombreCliente(),",",this.getApellidoCliente());
                         sucursal.eliminarCliente(this)
                     }
                 })
+                console.log("  !!SE HA AGREGADO A LA SUCURSAL : ", sucursalDestino.getNombreSucursal(), " EL CLIENTE : ", this.getNombreCliente(), ",", this.getApellidoCliente());
+                console.log("   !!SE HA ELIMINADO DE SUCURSAL ",exSucursal,"  EL CIENTE :  ", this.getNombreCliente(), ",", this.getApellidoCliente());
+
+
                 break;
             case 3:
-                console.groupCollapsed("Ya agregaremos jajajajajajajjajaajajal")
+                this.pacientes.push(this.crearPaciente());
+                console.log("   SE HA AGREGADO UN PACIENTE AL CLIENTE : ", this.getNombreCliente(), ", ", this.getApellidoCliente());
+                console.log(this.pacientes);
                 break;
         }
     }
@@ -98,6 +106,9 @@ export class Cliente {
     }
     getApellidoCliente() {
         return this.apellido;
+    }
+    getPaciente() {
+        return this.pacientes;
     }
     getSucursalId() {
         return this.idSucursalPerteneciente;
