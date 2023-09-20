@@ -1,9 +1,10 @@
+
 import * as readline from "readline-sync"
 
-import { Sucursal } from "./sucursal";
-import { Producto } from "./producto";
-import { Proveedor } from "./proveedor";
-import { Cliente } from "./cliente";
+import { Sucursal } from "./sucursales";
+import { Producto } from "./productos";
+import { Proveedor } from "./proveedores";
+import { Cliente } from "./clientes";
 import { Paciente } from "./paciente";
 
 export class Veterinarias {
