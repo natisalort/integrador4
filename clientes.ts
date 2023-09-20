@@ -1,6 +1,6 @@
 import * as readline from "readline-sync"
 import { Sucursal } from "./sucursales";
-import { Paciente } from "./paciente";
+import { Paciente } from "./pacientes";
 import { Veterinarias } from "./veterinarias";
 
 export class Cliente {
@@ -64,10 +64,10 @@ export class Cliente {
                 }
                 break;
             case 2:
+                let exSucursal=this.getPerteneceSucursal();
                 let sucursalDestino: Sucursal = miVeterinaria.buscarSucursal_por_Id();
                 this.perteneceSucursal = sucursalDestino.getNombreSucursal();
                 this.idSucursalPerteneciente = sucursalDestino.getIdSucursal();
-                console.log("  !!SE HA AGREGADO A LA SUCURSAL : ", sucursalDestino.getNombreSucursal(), " EL CLIENTE : ", this.getNombreCliente(), ",", this.getApellidoCliente())
                 sucursalDestino.getClientes().push(this);  //AQUI AGREGA EL CLIENTE A LA LISTA DE CLIENTES DE LA SUCURSAL ELEGIDA.
                 sucursalDestino.mostrarListaClientes();
 
@@ -75,10 +75,12 @@ export class Cliente {
                     if (sucursal.getIdSucursal() == this.getSucursalId()) {
                         let borrar = sucursal.getClientes().indexOf(this);
                         sucursal.getClientes().splice(borrar, 1);
-                        console.log("   !!SE HA CAMBIADO DE SUCURSAL  EL CIENTE :  ", this.getNombreCliente(), ",", this.getApellidoCliente());
                         sucursal.eliminarCliente(this)
                     }
                 })
+                console.log("  !!SE HA AGREGADO A LA SUCURSAL : ", sucursalDestino.getNombreSucursal(), " EL CLIENTE : ", this.getNombreCliente(), ",", this.getApellidoCliente())
+                console.log("   !!SE HA CAMBIADO DE SUCURSAL ",exSucursal,"  EL CIENTE :  ", this.getNombreCliente(), ",", this.getApellidoCliente());
+
                 break;
             case 3:
                 this.pacientes.push(this.crearPaciente());

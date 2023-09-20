@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Cliente = void 0;
 var readline = require("readline-sync");
-var paciente_1 = require("./paciente");
+var pacientes_1 = require("./pacientes");
 var Cliente = /** @class */ (function () {
     function Cliente(nombreSucursal, idSucursal, nombreDueño, apellido, telefono, direccion, idCliente) {
         this.nombreDueño = nombreDueño;
@@ -25,7 +25,7 @@ var Cliente = /** @class */ (function () {
         var especie = readline.question(" *Especie/raza :  ");
         especie = especie.charAt(0) + especie.slice(1).toLowerCase();
         var edadAnimal = readline.questionInt(" *Edad del animal :  ");
-        var paciente = new paciente_1.Paciente(nomb, especie, edadAnimal, this.idCliente);
+        var paciente = new pacientes_1.Paciente(nomb, especie, edadAnimal, this.idCliente);
         return paciente;
     };
     Cliente.prototype.modificarCliente = function (miVeterinaria) {
@@ -47,20 +47,21 @@ var Cliente = /** @class */ (function () {
                 }
                 break;
             case 2:
+                var exSucursal = this.getPerteneceSucursal();
                 var sucursalDestino = miVeterinaria.buscarSucursal_por_Id();
                 this.perteneceSucursal = sucursalDestino.getNombreSucursal();
                 this.idSucursalPerteneciente = sucursalDestino.getIdSucursal();
-                console.log("  !!SE HA AGREGADO A LA SUCURSAL : ", sucursalDestino.getNombreSucursal(), " EL CLIENTE : ", this.getNombreCliente(), ",", this.getApellidoCliente());
                 sucursalDestino.getClientes().push(this); //AQUI AGREGA EL CLIENTE A LA LISTA DE CLIENTES DE LA SUCURSAL ELEGIDA.
                 sucursalDestino.mostrarListaClientes();
                 miVeterinaria.getSucursales().forEach(function (sucursal) {
                     if (sucursal.getIdSucursal() == _this.getSucursalId()) {
                         var borrar = sucursal.getClientes().indexOf(_this);
                         sucursal.getClientes().splice(borrar, 1);
-                        console.log("   !!SE HA CAMBIADO DE SUCURSAL  EL CIENTE :  ", _this.getNombreCliente(), ",", _this.getApellidoCliente());
                         sucursal.eliminarCliente(_this);
                     }
                 });
+                console.log("  !!SE HA AGREGADO A LA SUCURSAL : ", sucursalDestino.getNombreSucursal(), " EL CLIENTE : ", this.getNombreCliente(), ",", this.getApellidoCliente());
+                console.log("   !!SE HA CAMBIADO DE SUCURSAL ", exSucursal, "  EL CIENTE :  ", this.getNombreCliente(), ",", this.getApellidoCliente());
                 break;
             case 3:
                 this.pacientes.push(this.crearPaciente());
