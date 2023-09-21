@@ -4,7 +4,7 @@ import { Producto } from "./productos";
 import { Proveedor } from "./proveedores";
 import { Veterinarias } from "./veterinarias";
 import { Cliente } from "./clientes";
-import { Paciente } from "./paciente";
+import { Paciente } from "./pacientes";
 
 export class Sucursal {
     protected nombreSucursal: string;

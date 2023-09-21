@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var readline = require("readline-sync");
 var veterinarias_1 = require("./veterinarias");
 //Aqui implementamos la clase "Veterinarias" :

@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.Veterinarias = void 0;
 var readline = require("readline-sync");
 var sucursales_1 = require("./sucursales");

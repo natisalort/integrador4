@@ -5,7 +5,7 @@ import { Sucursal } from "./sucursales";
 import { Producto } from "./productos";
 import { Proveedor } from "./proveedores";
 import { Cliente } from "./clientes";
-import { Paciente } from "./paciente";
+import { Paciente } from "./pacientes";
 
 export class Veterinarias {
     private categoriaDeProductos: string[];
