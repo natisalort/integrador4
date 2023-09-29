@@ -62,10 +62,27 @@ var Proveedor = /** @class */ (function () {
             }
         });
     };
+    //---------------------------------------------------------------------------------------------------------------------
+    //Esta funcion sera utilizada cada vez que se necesite pedir ingresar un numero por teclado. Asegura el ingreso de un entero.
+    Proveedor.prototype.ingresar_checkearnumero = function () {
+        var cantidad = 0;
+        while (cantidad == 0) {
+            var cantidadSolicitada = readline.questionInt("INGRESE OPCION :");
+            if (cantidadSolicitada !== undefined) {
+                cantidad = Math.floor(cantidadSolicitada);
+            }
+            else {
+                console.log("Entrada no válida. Debe ingresar un número entero.");
+                cantidad = 0;
+            }
+        }
+        return cantidad;
+    };
+    //----------------------------------------------------------------------------------------------------------------------
     Proveedor.prototype.generarPedido = function (categoria) {
         var _this = this;
         this.mostrarCatalogoDeCategoria(categoria);
-        var productoExiste = false;
+        var productoExiste = 1;
         var productoElegido = "";
         var _loop_1 = function () {
             productoElegido = readline.question("INGRESE NOMBRE DE PRODUCTO : ");
@@ -74,35 +91,34 @@ var Proveedor = /** @class */ (function () {
             this_1.catalogo.forEach(function (prod) {
                 if (prod.getNombreProd() == productoElegido) {
                     console.log("LA CANTIDAD DISPONIBLE DE ", prod.getNombreProd(), "ES : ", prod.getCantidadDisponible());
-                    var cantidadSolicitada = 0;
-                    while (cantidadSolicitada == 0) {
-                        cantidadSolicitada = readline.questionInt("INGRESE LA CANTIDAD SOLICITADA :");
-                        if (cantidadSolicitada > prod.getCantidadDisponible()) {
-                            console.log("La cantidad seleccionada excede el stock disponible. Ingrese nuevamente una cantidad : ");
-                            cantidadSolicitada = 0;
-                        }
-                        else {
-                            productoAgregado_a_pedido = prod;
-                            productoAgregado_a_pedido.setModificarCantidad(cantidadSolicitada);
-                        }
-                        prod.setRestarProductos(cantidadSolicitada); //Restamos al stock del proveedor la cantidad que nos entregara.
-                        console.log("La cantidad disponible actual en stock es de ", prod.getNombreProd(), " es : ", prod.getCantidadDisponible()); //Mostramos el stock actual del proveedor.
-                        _this.pedido.push(productoAgregado_a_pedido);
-                        console.log("PEDIDO : ", _this.pedido);
-                        productoExiste = true;
+                    console.log("INGRESE LA CANTIDAD SOLICITADA :");
+                    var cantidadSolicitada = _this.ingresar_checkearnumero();
+                    while (cantidadSolicitada > prod.getCantidadDisponible()) {
+                        console.log("La cantidad seleccionada excede el stock disponible. Ingrese nuevamente una cantidad : ");
+                        cantidadSolicitada = _this.ingresar_checkearnumero();
                     }
+                    productoAgregado_a_pedido = new productos_1.Producto(prod.getNombreProd(), prod.getDescripcion(), prod.getDescripcion(), prod.getPrecio(), cantidadSolicitada);
+                    prod.setRestarProductos(cantidadSolicitada); //Restamos al stock del proveedor la cantidad que nos entregara.
+                    console.log("La cantidad disponible actual en stock  de ", prod.getNombreProd(), " es : ", prod.getCantidadDisponible()); //Mostramos el stock actual del proveedor.
+                    _this.pedido.push(productoAgregado_a_pedido);
+                    productoExiste = readline.questionInt("Desea agregar otro/s productos de la categoria ", categoria, "al pedido? - Ingrese: si:1 (o cualquier otro numero para salir de categoria.)");
                 }
             });
         };
         var this_1 = this;
-        while (productoExiste == false) {
+        while (productoExiste == 1) {
             _loop_1();
         }
         return this.pedido;
     };
     //------------------------------------------------------------------------------------------
     Proveedor.prototype.enviarProductos_a_sucursal = function (sucursalDestino, pedido) {
-        sucursalDestino.getProductosDisponibles().push(pedido);
+        pedido.forEach(function (paq) {
+            paq.forEach(function (prod) {
+                sucursalDestino.getProductosDisponibles().push(prod);
+                console.log("PRODUCTO : ", prod.getNombreProd(), " ENVIADO A SUCURSAL : --", sucursalDestino.getNombreSucursal());
+            });
+        });
     };
     //---getters-setters
     Proveedor.prototype.getNombreProveedor = function () {

@@ -26,12 +26,14 @@ var Producto = /** @class */ (function () {
     };
     Producto.prototype.setAgregarProductos = function (num) {
         this.cantidad += num;
+        return this.cantidad;
     };
     Producto.prototype.setModificarCantidad = function (num) {
         this.cantidad = num;
     };
     Producto.prototype.setRestarProductos = function (num) {
         this.cantidad -= num;
+        return this.cantidad;
     };
     return Producto;
 }());

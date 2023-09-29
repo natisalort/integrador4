@@ -8,9 +8,6 @@ var clientes_1 = require("./clientes");
 var Veterinarias = /** @class */ (function () {
     function Veterinarias() {
         this.categoriaDeProductos = ["Alimentos", "Salud", "Higiene"];
-        this.prodAlimentos = [];
-        this.prodSalud = [];
-        this.prodHigiene = [];
         this.sucursales = [];
         this.proveedores = [];
     }
@@ -20,11 +17,11 @@ var Veterinarias = /** @class */ (function () {
         var idAsignado = 0;
         while (IdExiste == true) {
             idAsignado = Math.floor(Math.random() * 100) * 10000;
-            IdExiste = this.chequear_Id_Existe(idAsignado, array);
+            IdExiste = this.chequear_Id_proveedor_Existe(idAsignado, array);
         }
         return idAsignado;
     };
-    Veterinarias.prototype.chequear_Id_Existe = function (id, arreglo) {
+    Veterinarias.prototype.chequear_Id_proveedor_Existe = function (id, arreglo) {
         var existe = false;
         arreglo.forEach(function (item) {
             if (item.id == id) {
@@ -33,6 +30,31 @@ var Veterinarias = /** @class */ (function () {
         });
         return existe;
     };
+    Veterinarias.prototype.chequear_Id_Sucursal_Existe = function (id, arreglo) {
+        var existe = false;
+        arreglo.forEach(function (item) {
+            if (item.id == id) {
+                existe = true;
+            }
+        });
+        return existe;
+    };
+    //---------------------------------------------------------------------------------------------------------------------
+    Veterinarias.prototype.ingresarCheckearNumero = function () {
+        var cantidad = 0;
+        while (cantidad == 0) {
+            var cantidadSolicitada = readline.questionInt("INGRESE LA  OPCION :");
+            if (cantidadSolicitada !== undefined) {
+                cantidad = Math.floor(cantidadSolicitada);
+            }
+            else {
+                console.log("Entrada no válida. Debe ingresar un número entero.");
+                cantidad = 0;
+            }
+        }
+        return cantidad;
+    };
+    //-----------------------
     Veterinarias.prototype.crearProveedor = function () {
         var rubros = [];
         console.log("************************************************");
@@ -46,11 +68,16 @@ var Veterinarias = /** @class */ (function () {
         console.log("************************************************");
         console.log("           **RUBROS DEL PROVEEDOR: ");
         console.log("************************************************");
-        var categ = 0;
-        var rubro = "";
         var agregar = 1;
-        while (categ < 1 && categ > 3 || agregar == 1) {
-            categ = readline.questionInt("  *Rubro: indique rubro de proveedor : 1. Alimentos, 2. Salud, 3. Higiene :  ");
+        while (agregar == 1) {
+            console.log("  *Indique rubro/s de proveedor : 1. Alimentos, 2. Salud, 3. Higiene :  ");
+            var categ = this.ingresarCheckearNumero();
+            var rubro = "";
+            while (categ < 1 && categ > 3) {
+                console.log("-----La opcion ingresada NO es correcta!------");
+                console.log("  *Indique rubro/s de proveedor : 1. Alimentos, 2. Salud, 3. Higiene :  ");
+                categ = this.ingresarCheckearNumero();
+            }
             switch (categ) {
                 case 1:
                     rubros.push("alimentos");
@@ -64,10 +91,9 @@ var Veterinarias = /** @class */ (function () {
                     rubros.push("higiene");
                     rubro = "higiene";
                     break;
-                default:
-                    console.log("La opcion ingresada no es correcta. Por favor ingrese nuevamente");
             }
-            agregar = readline.questionInt("Desea agregar rubro a este proveedor? - si: ingrese 1 (o ingrese otro numero para terminar)");
+            console.log("Desea agregar rubro a este proveedor? - si: ingrese 1 ,(o ingrese otro numero para terminar");
+            agregar = this.ingresarCheckearNumero();
         }
         var idAsignado = this.crearChequearId(this.proveedores); //Creamos y cchequeamos no repetir ID
         this.proveedores.push(new proveedores_1.Proveedor(nombreProveedor, idAsignado, telefonoProveedor, direccion, rubros)); //Creamos un proveedor con todos los datos obtenidos y directamente los guardamos en la lista de proveedores.
@@ -78,8 +104,10 @@ var Veterinarias = /** @class */ (function () {
         console.log("-----------------------------------------------------------------");
         array.forEach(function (item) {
             console.log("--Nombre del proveedor: ", item.getNombreProveedor());
+            console.log("--ID del proveedor: ", item.getIdProveedor());
             console.log("--Telefono del proveedor: ", item.getTelefonoProveedor());
             console.log("--Rubro: ", item.getRubroProveedor());
+            console.log("*****************************************************");
         });
     };
     //--------------------------------------------------------------------------------------------------
@@ -122,15 +150,15 @@ var Veterinarias = /** @class */ (function () {
         var existe = false;
         var numSucursal = 0; //Aqui nos aseguramos que el ID ingresado sea correcto.
         while (existe == false) {
-            numSucursal = readline.questionInt("**Ingrese el numero ID de la sucursal seleccionada : ");
-            existe = this.chequear_Id_Existe(numSucursal, this.getSucursales());
+            console.log("**Ingrese el numero ID de la sucursal seleccionada : ");
+            numSucursal = this.ingresarCheckearNumero();
+            existe = this.chequear_Id_Sucursal_Existe(numSucursal, this.sucursales);
         }
         var sucursalElegida = new sucursales_1.Sucursal("", "", 0, 0);
         this.sucursales.forEach(function (sucursal) {
             if (sucursal.getIdSucursal() == numSucursal) {
                 sucursalElegida = sucursal;
             }
-            return sucursalElegida;
         });
         return sucursalElegida;
     };
@@ -168,7 +196,7 @@ var Veterinarias = /** @class */ (function () {
         var proveedorSeleccionado = 0;
         while (proveedorExiste == false) {
             proveedorSeleccionado = readline.question("Ingrese ID de proveedor seleccionado : ");
-            proveedorExiste = this.chequear_Id_Existe(proveedorSeleccionado, this.proveedores);
+            proveedorExiste = this.chequear_Id_proveedor_Existe(proveedorSeleccionado, this.proveedores);
         }
         var proveedor = this.proveedores.filter(function (x) { return x.id == proveedorSeleccionado; });
         return proveedor[0];
@@ -176,10 +204,11 @@ var Veterinarias = /** @class */ (function () {
     Veterinarias.prototype.enviarProductos_a_sucursal = function () {
         var sucursalDestino = this.buscarSucursal_por_Id(); //Selecciona una sucursal y la trae para modificar su lista de productos disponibles.
         var elegirProveedor = []; //Aqui guardaremos los proveedores que tengan la categoria de productos que queremos enviar.
+        var pedido = [];
         var categoriaDelEnvio = "";
         var nuevoEnvio = false;
         while (nuevoEnvio == false) {
-            categoriaDelEnvio = readline.question("INGRESE LA CATEGORIA DEL PRODUCTO QUE SE ENVIARA A SUCURSAL : ----").toLowerCase(); // Convierte todo el texto a minuscula.
+            categoriaDelEnvio = readline.question("INGRESE LA CATEGORIA DEL PRODUCTO QUE SE ENVIARA A SUCURSAL : ----", sucursalDestino.getNombreSucursal()).toLowerCase(); // Convierte todo el texto a minuscula.
             this.proveedores.forEach(function (proveedor) {
                 proveedor.getRubroProveedor().forEach(function (rubro) {
                     if (rubro == categoriaDelEnvio) { //Si este proveedor tiene la categoria que deseo enviar
@@ -190,13 +219,15 @@ var Veterinarias = /** @class */ (function () {
             });
         }
         console.log("//////////////////////////////////////////////////////////////////////////////////");
-        console.log("PROVEEDORES DE CATEGORIA  *", categoriaDelEnvio);
-        console.log(elegirProveedor);
+        console.log("          PROVEEDORES DE CATEGORIA  --**", categoriaDelEnvio);
+        console.log("//////////////////////////////////////////////////////////////////////////////////");
+        console.log("-----------------------------------------------------------------------------------");
+        this.mostrarListaProveedores(elegirProveedor);
         console.log("-----------------------------------------------------------------------------------");
         var proveedorElegido = this.traerProveedor(elegirProveedor);
-        var pedido = proveedorElegido.generarPedido(categoriaDelEnvio);
+        pedido.push(proveedorElegido.generarPedido(categoriaDelEnvio));
         proveedorElegido.enviarProductos_a_sucursal(sucursalDestino, pedido);
-        sucursalDestino.mostrarProductos();
+        console.log("PRODUCTOS DISPONIBLES EN SUCURSAL ", sucursalDestino.getNombreSucursal(), sucursalDestino.getProductosDisponibles());
     };
     Veterinarias.prototype.getSucursales = function () {
         return this.sucursales;

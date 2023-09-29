@@ -9,31 +9,27 @@ import { Paciente } from "./pacientes";
 
 export class Veterinarias {
     private categoriaDeProductos: string[];
-    private prodAlimentos: Producto[];
-    private prodSalud: Producto[];
-    private prodHigiene: Producto[];
     protected sucursales: Sucursal[];
     protected proveedores: Proveedor[];
 
     public constructor() {
         this.categoriaDeProductos = ["Alimentos", "Salud", "Higiene"]
-        this.prodAlimentos = [];
-        this.prodSalud = [];
-        this.prodHigiene = [];
         this.sucursales = [];
         this.proveedores = [];
     }
     //-----------------------------------------------------------------------------------------------
-    public crearChequearId(array) {
+    public crearChequearId(array: Proveedor[]) {
         let IdExiste = true;
         let idAsignado = 0;
         while (IdExiste == true) {
             idAsignado = Math.floor(Math.random() * 100) * 10000;
-            IdExiste = this.chequear_Id_Existe(idAsignado, array)
+            IdExiste = this.chequear_Id_proveedor_Existe(idAsignado, array);
         }
         return idAsignado;
+
+
     }
-    public chequear_Id_Existe(id: number, arreglo): boolean {
+    public chequear_Id_proveedor_Existe(id: number, arreglo: Proveedor[]): boolean {
         let existe = false;
         arreglo.forEach(item => {
             if (item.id == id) {
@@ -43,6 +39,31 @@ export class Veterinarias {
         return existe;
     }
 
+    public chequear_Id_Sucursal_Existe(id: number, arreglo: Sucursal[]): boolean {
+        let existe = false;
+        arreglo.forEach(item => {
+            if (item.id == id) {
+                existe = true;
+            }
+        })
+        return existe;
+    }
+
+    //---------------------------------------------------------------------------------------------------------------------
+    public ingresarCheckearNumero(): number {
+        let cantidad = 0;
+        while (cantidad == 0) {
+            let cantidadSolicitada: number | undefined = readline.questionInt("INGRESE LA  OPCION :");
+            if (cantidadSolicitada !== undefined) {
+                cantidad = Math.floor(cantidadSolicitada);
+            } else {
+                console.log("Entrada no válida. Debe ingresar un número entero.");
+                cantidad = 0;
+            }
+        }
+        return cantidad;
+    }
+    //-----------------------
     public crearProveedor() {
         let rubros: string[] = [];
         console.log("************************************************")
@@ -58,42 +79,51 @@ export class Veterinarias {
         console.log("************************************************")
         console.log("           **RUBROS DEL PROVEEDOR: ");
         console.log("************************************************")
-        let categ = 0;
-        let rubro="";
-        let agregar = 1
-        while (categ <1 && categ > 3 || agregar == 1) {
-            categ = readline.questionInt("  *Rubro: indique rubro de proveedor : 1. Alimentos, 2. Salud, 3. Higiene :  ");
+
+        let agregar = 1;
+        while (agregar == 1) {
+            console.log("  *Indique rubro/s de proveedor : 1. Alimentos, 2. Salud, 3. Higiene :  ");
+            let categ = this.ingresarCheckearNumero();
+            let rubro = "";
+
+            while (categ < 1 && categ > 3) {
+                console.log("-----La opcion ingresada NO es correcta!------")
+                console.log("  *Indique rubro/s de proveedor : 1. Alimentos, 2. Salud, 3. Higiene :  ");
+                categ = this.ingresarCheckearNumero();
+            }
             switch (categ) {
                 case 1:
                     rubros.push("alimentos");
-                    rubro="alimentos"
+                    rubro = "alimentos"
                     break;
                 case 2:
                     rubros.push("salud");
-                    rubro="alimentos"
+                    rubro = "alimentos"
                     break;
                 case 3:
                     rubros.push("higiene");
-                    rubro="higiene";
+                    rubro = "higiene";
                     break;
-            default:
-                console.log("La opcion ingresada no es correcta. Por favor ingrese nuevamente");
             }
-            agregar=readline.questionInt("Desea agregar rubro a este proveedor? - si: ingrese 1 (o ingrese otro numero para terminar)");
-        }
+            console.log("Desea agregar rubro a este proveedor? - si: ingrese 1 ,(o ingrese otro numero para terminar");
+            agregar = this.ingresarCheckearNumero();
 
+        }
         let idAsignado = this.crearChequearId(this.proveedores);//Creamos y cchequeamos no repetir ID
         this.proveedores.push(new Proveedor(nombreProveedor, idAsignado, telefonoProveedor, direccion, rubros));//Creamos un proveedor con todos los datos obtenidos y directamente los guardamos en la lista de proveedores.
     }
 
-    public mostrarListaProveedores(array:Proveedor[]) {
+    public mostrarListaProveedores(array: Proveedor[]) {
         console.log("------------------------------------------------------------------")
         console.log("            LISTA DE PROVEEDORES (contratados): ");
         console.log("-----------------------------------------------------------------")
         array.forEach(item => {
             console.log("--Nombre del proveedor: ", item.getNombreProveedor());
+            console.log("--ID del proveedor: ", item.getIdProveedor());
+
             console.log("--Telefono del proveedor: ", item.getTelefonoProveedor());
             console.log("--Rubro: ", item.getRubroProveedor());
+            console.log("*****************************************************");
         })
     }
     //--------------------------------------------------------------------------------------------------
@@ -139,10 +169,11 @@ export class Veterinarias {
 
     public buscarSucursal_por_Id(): Sucursal {
         let existe = false;
-        let numSucursal = 0;     //Aqui nos aseguramos que el ID ingresado sea correcto.
+        let numSucursal: number = 0;     //Aqui nos aseguramos que el ID ingresado sea correcto.
         while (existe == false) {
-            numSucursal = readline.questionInt("**Ingrese el numero ID de la sucursal seleccionada : ");
-            existe = this.chequear_Id_Existe(numSucursal, this.getSucursales());
+            console.log("**Ingrese el numero ID de la sucursal seleccionada : ");
+            numSucursal = this.ingresarCheckearNumero();
+            existe = this.chequear_Id_Sucursal_Existe(numSucursal, this.sucursales);
         }
 
         let sucursalElegida: Sucursal = new Sucursal("", "", 0, 0);
@@ -150,7 +181,6 @@ export class Veterinarias {
             if (sucursal.getIdSucursal() == numSucursal) {
                 sucursalElegida = sucursal;
             }
-            return sucursalElegida;
         })
         return sucursalElegida;
     }
@@ -196,7 +226,7 @@ export class Veterinarias {
         let proveedorSeleccionado = 0;
         while (proveedorExiste == false) {
             proveedorSeleccionado = readline.question("Ingrese ID de proveedor seleccionado : ");
-            proveedorExiste = this.chequear_Id_Existe(proveedorSeleccionado, this.proveedores)
+            proveedorExiste = this.chequear_Id_proveedor_Existe(proveedorSeleccionado, this.proveedores)
         }
 
         let proveedor = this.proveedores.filter(x => x.id == proveedorSeleccionado);
@@ -206,30 +236,35 @@ export class Veterinarias {
     public enviarProductos_a_sucursal() {
         let sucursalDestino = this.buscarSucursal_por_Id();//Selecciona una sucursal y la trae para modificar su lista de productos disponibles.
         let elegirProveedor: Proveedor[] = []; //Aqui guardaremos los proveedores que tengan la categoria de productos que queremos enviar.
+        let pedido:Producto[][]=[];
         let categoriaDelEnvio = "";
         let nuevoEnvio = false;
         while (nuevoEnvio == false) {
 
-            categoriaDelEnvio = readline.question("INGRESE LA CATEGORIA DEL PRODUCTO QUE SE ENVIARA A SUCURSAL : ----").toLowerCase();// Convierte todo el texto a minuscula.
+            categoriaDelEnvio = readline.question("INGRESE LA CATEGORIA DEL PRODUCTO QUE SE ENVIARA A SUCURSAL : ----", sucursalDestino.getNombreSucursal()).toLowerCase();// Convierte todo el texto a minuscula.
 
             this.proveedores.forEach(proveedor => {
                 proveedor.getRubroProveedor().forEach(rubro => {
                     if (rubro == categoriaDelEnvio) { //Si este proveedor tiene la categoria que deseo enviar
                         elegirProveedor.push(proveedor); //Me guarda este proveedor en la lista de opciones de proveedores.
-                        nuevoEnvio=true;
+                        nuevoEnvio = true;
                     }
                 })
             })
         }
 
         console.log("//////////////////////////////////////////////////////////////////////////////////")
-        console.log("PROVEEDORES DE CATEGORIA  *", categoriaDelEnvio);
-        console.log(elegirProveedor);
+        console.log("          PROVEEDORES DE CATEGORIA  --**", categoriaDelEnvio);
+        console.log("//////////////////////////////////////////////////////////////////////////////////")
+        console.log("-----------------------------------------------------------------------------------");
+
+        this.mostrarListaProveedores(elegirProveedor);
         console.log("-----------------------------------------------------------------------------------");
         let proveedorElegido = this.traerProveedor(elegirProveedor);
-        let pedido = proveedorElegido.generarPedido(categoriaDelEnvio);
+        pedido.push(proveedorElegido.generarPedido(categoriaDelEnvio));
         proveedorElegido.enviarProductos_a_sucursal(sucursalDestino, pedido);
-        sucursalDestino.mostrarProductos();
+        console.log("PRODUCTOS DISPONIBLES EN SUCURSAL ", sucursalDestino.getNombreSucursal(), sucursalDestino.getProductosDisponibles());
+
     }
 
 
@@ -238,7 +273,7 @@ export class Veterinarias {
     public getSucursales() {
         return this.sucursales;
     }
-    public getProveedores(){
+    public getProveedores() {
         return this.proveedores;
     }
 

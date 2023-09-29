@@ -7,12 +7,12 @@ import { Cliente } from "./clientes";
 import { Paciente } from "./pacientes";
 
 export class Sucursal {
-    protected nombreSucursal: string;
+    private nombreSucursal: string;
     public id: number;
     private direccion: string;
     private telefono: number;
-    public productosDisponibles_en_sucursal: Producto[];
-    clientes: Cliente[];
+    private productosDisponibles_en_sucursal: Producto[];
+    private clientes: Cliente[];
 
     constructor(nombreSucursal: string, direccion: string, telefono: number, idSucursal: number) {
         this.nombreSucursal = nombreSucursal;
@@ -22,14 +22,32 @@ export class Sucursal {
         this.clientes = [];
         this.productosDisponibles_en_sucursal = [];
     }
+
+
     //-----------------------------------------------------------------------------------------------------------------------
+    //Esta funcion sera utilizada cada vez que se necesite pedir ingresar un numero por teclado. Asegura el ingreso de un entero.
+    public ingresar_checkearnumero(): number {
+        let cantidad = 0;
+        while (cantidad == 0) {
+            let cantidadSolicitada: number | undefined = readline.questionInt("INGRESE NUMERO :");
+            if (cantidadSolicitada !== undefined) {
+                cantidad = Math.floor(cantidadSolicitada);
+            } else {
+                console.log("Entrada no válida. Debe ingresar un número entero.");
+                cantidad = 0;
+            }
+        }
+        return cantidad;
+    }
+    //----------------------------------------------------------------------------------------------------------------------
+
 
     public mostrarProductos() {
         console.log("************************************************")
-        console.log("       **PRODUCTOS DISPONIBLES EN SUCURSAL : ");
+        console.log("       **PRODUCTOS DISPONIBLES EN SUCURSAL : ", this.getNombreSucursal());
         console.log("************************************************")
-        this.productosDisponibles_en_sucursal.forEach(producto => {
-            console.log("          ", producto.getNombreProd());
+        this.getProductosDisponibles().forEach(producto => {
+            console.log("          ", producto.getNombreProd);
             console.log("----", producto.getDescripcion());
             console.log("----Precio por unidad : $", producto.getPrecio());
             console.log("----Cantidad disponible : ", producto.getCantidadDisponible());
@@ -45,7 +63,8 @@ export class Sucursal {
         nombreDueno = nombreDueno.charAt(0).toUpperCase() + nombreDueno.slice(1);
         let apellidoDueno = readline.question("  *Apellido : ");
         apellidoDueno = apellidoDueno.charAt(0).toUpperCase() + apellidoDueno.slice(1);
-        let telefonoDueno = readline.questionInt("  *Telefono  :");
+        console.log("  *Telefono ");
+        let telefonoDueno = this.ingresar_checkearnumero();
         let direccionDueno = readline.question("  *Direccion  :");
         direccionDueno = direccionDueno.charAt(0).toUpperCase() + direccionDueno.slice(1);
 
@@ -66,7 +85,7 @@ export class Sucursal {
 
     public mostrarListaClientes() {
         console.log("------------------------------------------------------------------")
-        console.log("            LISTA DE CLIENTES DE LA SUCURSAL : ", this.getNombreSucursal());
+        console.log("            LISTA DE CLIENTES DE LA SUCURSAL : "+ this.nombreSucursal);
         console.log("-----------------------------------------------------------------")
 
         this.clientes.forEach(cliente => {
@@ -87,26 +106,26 @@ export class Sucursal {
     }
 
 
-    getIdSucursal() {
+    getIdSucursal(): number {
         return this.id;
     }
-    getNombreSucursal() {
+    getNombreSucursal(): string {
         return this.nombreSucursal;
     }
 
-    getDireccionSucursal() {
+    getDireccionSucursal(): string {
         return this.direccion;
     }
-    getTelefono() {
+    getTelefono(): number {
         return this.telefono;
     }
-    getClientes() {
+    getClientes(): Cliente[] {
         return this.clientes;
     }
-    getProductosDisponibles() {
+    getProductosDisponibles(): Producto[] {
         return this.productosDisponibles_en_sucursal;
     }
-    public setAgregarProductos(pedido){
+    public setAgregarProductos(pedido) {
         this.productosDisponibles_en_sucursal.push(pedido);
     }
 }

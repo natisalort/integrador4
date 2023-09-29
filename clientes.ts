@@ -4,7 +4,7 @@ import { Paciente } from "./pacientes";
 import { Veterinarias } from "./veterinarias";
 
 export class Cliente {
-    nombreDueño: string;
+    nombreDueno: string;
     apellido: string;
     telefonoCliente: number;
     direccionCliente: string;
@@ -17,7 +17,7 @@ export class Cliente {
 
     constructor(nombreSucursal: string, idSucursal: number, nombreDueño: string, apellido: string, telefono: number, direccion: string, idCliente: number) {
 
-        this.nombreDueño = nombreDueño;
+        this.nombreDueno = nombreDueño;
         this.apellido = apellido;
         this.telefonoCliente = telefono;
         this.direccionCliente = direccion;
@@ -46,76 +46,74 @@ export class Cliente {
     }
 
     modificarCliente(miVeterinaria) {
-        console.log("------------------------------------------------------------------------");
-        console.log("SELECCIONE OPCION DESEADA : ");
-        console.log("       -Registrar visita :  -Ingrese 1.")
-        console.log("       -Cambiar de sucursal : -Ingrese 2.");
-        console.log("       -Agregar  nuevo paciente : -Ingrese 3.");
-        console.log("------------------------------------------------------------------------");
-        let opcion = readline.questionInt("             *Ingrese opcion seleccionada : ");
-        console.log("------------------------------------------------------------------------");
+        let otraModificacion = 1;
+        while (otraModificacion == 1) {
+            console.log("------------------------------------------------------------------------");
+            console.log("SELECCIONE OPCION DESEADA : ");
+            console.log("       -Registrar visita :  -Ingrese 1.")
+            console.log("       -Cambiar de sucursal : -Ingrese 2.");
+            console.log("       -Agregar  nuevo paciente : -Ingrese 3.");
+            console.log("------------------------------------------------------------------------");
+            let opcion = readline.questionInt("             *Ingrese opcion seleccionada : ");
+            console.log("------------------------------------------------------------------------");
 
-        switch (opcion) {
-            case 1:
-                this.setVisita();
-                if (this.visitas >= 5) {
-                    console.log("       FELICIDADES SE HA CONVERTIDO EN UN CLIENTE VIP !!!");
-                    this.vip = true;
-                }
-                break;
-            case 2:
-                let exSucursal=this.getPerteneceSucursal();
-                let sucursalDestino: Sucursal = miVeterinaria.buscarSucursal_por_Id();
-                this.perteneceSucursal = sucursalDestino.getNombreSucursal();
-                this.idSucursalPerteneciente = sucursalDestino.getIdSucursal();
-                sucursalDestino.getClientes().push(this);  //AQUI AGREGA EL CLIENTE A LA LISTA DE CLIENTES DE LA SUCURSAL ELEGIDA.
-                sucursalDestino.mostrarListaClientes();
-
-                miVeterinaria.getSucursales().forEach(sucursal => {
-                    if (sucursal.getIdSucursal() == this.getSucursalId()) {
-                        let borrar = sucursal.getClientes().indexOf(this);
-                        sucursal.getClientes().splice(borrar, 1);
-                        sucursal.eliminarCliente(this)
+            switch (opcion) {
+                case 1:
+                    this.setVisita();
+                    console.log("VISITA REGISTRADA !!!")
+                    if (this.visitas >= 4) {
+                        console.log("       FELICIDADES SE HA CONVERTIDO EN UN CLIENTE VIP !!!");
+                        this.vip = true;
                     }
-                })
-                console.log("  !!SE HA AGREGADO A LA SUCURSAL : ", sucursalDestino.getNombreSucursal(), " EL CLIENTE : ", this.getNombreCliente(), ",", this.getApellidoCliente())
-                console.log("   !!SE HA CAMBIADO DE SUCURSAL ",exSucursal,"  EL CIENTE :  ", this.getNombreCliente(), ",", this.getApellidoCliente());
+                    break;
+                case 2:
+                    let exSucursal = this.getPerteneceSucursal();
+                    let sucursalDestino: Sucursal = miVeterinaria.buscarSucursal_por_Id();
+                    this.perteneceSucursal = sucursalDestino.getNombreSucursal();
+                    this.idSucursalPerteneciente = sucursalDestino.getIdSucursal();
+                    sucursalDestino.getClientes().push(this);  //AQUI AGREGA EL CLIENTE A LA LISTA DE CLIENTES DE LA SUCURSAL ELEGIDA.
+                    sucursalDestino.mostrarListaClientes();
 
-                break;
-            case 3:
-                this.pacientes.push(this.crearPaciente());
-                console.log("   SE HA AGREGADO UN PACIENTE AL CLIENTE : ", this.getNombreCliente(), ", ", this.getApellidoCliente());
-                console.log(this.pacientes);
-                break;
+                    miVeterinaria.getSucursales().forEach(sucursal => {
+                        if (sucursal.getIdSucursal() == this.getSucursalId()) {
+                            let borrar = sucursal.getClientes().indexOf(this);
+                            sucursal.getClientes().splice(borrar, 1);
+                            sucursal.eliminarCliente(this)
+                        }
+                    })
+                    console.log("  !!SE HA AGREGADO A LA SUCURSAL : ", sucursalDestino.getNombreSucursal(), " EL CLIENTE : ", this.getNombreCliente(), ",", this.getApellidoCliente())
+                    console.log("   !!SE HA CAMBIADO DE SUCURSAL ", exSucursal, "  EL CIENTE :  ", this.getNombreCliente(), ",", this.getApellidoCliente());
+
+                    break;
+                case 3:
+                    this.pacientes.push(this.crearPaciente());
+                    console.log("   SE HA AGREGADO UN PACIENTE AL CLIENTE : ", this.getNombreCliente(), ", ", this.getApellidoCliente());
+                    console.log(this.pacientes);
+                    break;
+            }
+            otraModificacion=readline.questionInt("**DESEA REALIZAR OTRA MODIFICACION A ESTE CLIENTE?- 1:si (o cualquier numero para salir)")
         }
     }
 
-    crearVIP(visitas: number) {
-        if (visitas >= 5) {
-            this.vip = true;
-            console.log("FELICIDADES!!... AHORA ES UN CLIENTE VIP.");
-        }
-    }
-
-    getIdCliente() {
+    public getIdCliente(): number {
         return this.idCliente;
     }
-    getNombreCliente() {
-        return this.nombreDueño;
+    public getNombreCliente(): string {
+        return this.nombreDueno;
     }
-    getApellidoCliente() {
+    public getApellidoCliente(): string {
         return this.apellido;
     }
-    getPaciente() {
+    public getPaciente() {
         return this.pacientes;
     }
-    getSucursalId() {
+    public getSucursalId(): number {
         return this.idSucursalPerteneciente;
     }
-    getPerteneceSucursal() {
+    public getPerteneceSucursal(): string {
         return this.perteneceSucursal;
     }
-    getVip() {
+    public getVip(): string {
         if (this.vip == false) {
             return "NO";
         } else {
@@ -123,7 +121,7 @@ export class Cliente {
         }
     }
 
-    setVisita() {
+    public setVisita() {
         this.visitas += 1;
     }
 }

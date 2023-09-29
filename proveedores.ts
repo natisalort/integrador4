@@ -11,21 +11,21 @@ export class Proveedor {
     // atributos:
     private nombre: string;
     public id: number;
-    private telefono: number;
-    private direccion:string;
+    private telefono: number | undefined;
+    private direccion: string;
     private rubros: string[];
-    private catalogo:Producto[];
-    private pedido:Producto [];
+    private catalogo: Producto[];
+    private pedido: Producto[];
 
     // constructor:
-    constructor(nombreProveedor: string, idProveedor: number, telefonoProveedor: number,direccion:string, rubros) {
+    constructor(nombreProveedor: string, idProveedor: number, telefonoProveedor: number | undefined, direccion: string, rubros) {
         this.nombre = nombreProveedor;
         this.id = idProveedor;
         this.telefono = telefonoProveedor;
-        this.direccion=direccion;
-        this.rubros=rubros;
-        this.catalogo=[];
-        this.pedido=[];
+        this.direccion = direccion;
+        this.rubros = rubros;
+        this.catalogo = [];
+        this.pedido = [];
         this.rubros.forEach(rubro => {
             switch (rubro) {
                 case "alimentos":
@@ -39,9 +39,9 @@ export class Proveedor {
                     break;
             }
         })
-       
+
     }
-    
+
 
 
     // metodos:
@@ -69,68 +69,86 @@ export class Proveedor {
     }
 
 
-    public mostrarCatalogoDeCategoria(categoria:string) {
+    public mostrarCatalogoDeCategoria(categoria: string) {
         console.log("******************************************************");
         console.log("           CATALOGO DE ", categoria);
         console.log("******************************************************");
         this.catalogo.forEach(Producto => {
-            if(Producto.getCategoria()==categoria){
+            if (Producto.getCategoria() == categoria) {
                 console.log("          ", Producto.getNombreProd());
                 console.log("----", Producto.getDescripcion());
                 console.log("----Precio por unidad : $", Producto.getPrecio());
                 console.log("----Cantidad disponible : ", Producto.getCantidadDisponible());
                 console.log("------------------------------------------------------------------")
             }
-            
+
         })
     }
+    //---------------------------------------------------------------------------------------------------------------------
+    //Esta funcion sera utilizada cada vez que se necesite pedir ingresar un numero por teclado. Asegura el ingreso de un entero.
+    public ingresar_checkearnumero(): number {
+        let cantidad = 0;
+        while (cantidad == 0) {
+            let cantidadSolicitada: number = readline.questionInt("INGRESE OPCION :");
+            if (cantidadSolicitada !== undefined) {
+                cantidad = Math.floor(cantidadSolicitada);
+            } else {
+                console.log("Entrada no válida. Debe ingresar un número entero.");
+                cantidad = 0;
+            }
+        }
+        return cantidad;
+    }
+    //----------------------------------------------------------------------------------------------------------------------
 
+    public generarPedido(categoria: string,): Producto[] {
 
-    public generarPedido(categoria:string,):Producto[]{
-        
         this.mostrarCatalogoDeCategoria(categoria);
 
-        let productoExiste=false;
-        let productoElegido="";
-        while(productoExiste==false){
-            productoElegido=readline.question("INGRESE NOMBRE DE PRODUCTO : ");
+        let productoExiste = 1;
+        let productoElegido = "";
+        while (productoExiste == 1) {
+            productoElegido = readline.question("INGRESE NOMBRE DE PRODUCTO : ");
             productoElegido = productoElegido.charAt(0).toUpperCase() + productoElegido.slice(1).toLowerCase();
 
-            let productoAgregado_a_pedido:Producto;//Inicializamos una variable que guardara provisoriamente el producto tal cual, solo con la cantidad modificada, que es la que tendra la sucursal.
+            let productoAgregado_a_pedido: Producto;//Inicializamos una variable que guardara provisoriamente el producto tal cual, solo con la cantidad modificada, que es la que tendra la sucursal.
 
-            this.catalogo.forEach(prod=>{
-                if(prod.getNombreProd()==productoElegido){
-                    console.log("LA CANTIDAD DISPONIBLE DE ",prod.getNombreProd(), "ES : ",prod.getCantidadDisponible());
-                    let cantidadSolicitada:number=0;
-                    while(cantidadSolicitada==0){
-                        cantidadSolicitada=readline.questionInt("INGRESE LA CANTIDAD SOLICITADA :");
-                        if(cantidadSolicitada>prod.getCantidadDisponible()){
-                            console.log("La cantidad seleccionada excede el stock disponible. Ingrese nuevamente una cantidad : ");
-                            cantidadSolicitada=0;
-                        }else{
-                            productoAgregado_a_pedido=prod;
-                            productoAgregado_a_pedido.setModificarCantidad(cantidadSolicitada);
-                        }
-                        prod.setRestarProductos(cantidadSolicitada); //Restamos al stock del proveedor la cantidad que nos entregara.
-                        console.log("La cantidad disponible actual en stock es de ", prod.getNombreProd()," es : ",prod.getCantidadDisponible())//Mostramos el stock actual del proveedor.
-
-                        this.pedido.push(productoAgregado_a_pedido);
-                        console.log("PEDIDO : ",this.pedido);
-                        productoExiste=true;
+            this.catalogo.forEach(prod => {
+                if (prod.getNombreProd() == productoElegido) {
+                    console.log("LA CANTIDAD DISPONIBLE DE ", prod.getNombreProd(), "ES : ", prod.getCantidadDisponible());
+                    console.log("INGRESE LA CANTIDAD SOLICITADA :");
+                    let cantidadSolicitada = this.ingresar_checkearnumero();
+                    while (cantidadSolicitada > prod.getCantidadDisponible()) {
+                        console.log("La cantidad seleccionada excede el stock disponible. Ingrese nuevamente una cantidad : ");
+                        cantidadSolicitada = this.ingresar_checkearnumero();
                     }
+                    productoAgregado_a_pedido = new Producto(prod.getNombreProd(), prod.getDescripcion(), prod.getDescripcion(), prod.getPrecio(), cantidadSolicitada)
+
+                    prod.setRestarProductos(cantidadSolicitada); //Restamos al stock del proveedor la cantidad que nos entregara.
+                    console.log("La cantidad disponible actual en stock  de ", prod.getNombreProd(), " es : ", prod.getCantidadDisponible())//Mostramos el stock actual del proveedor.
+
+                    this.pedido.push(productoAgregado_a_pedido);
+
+                    productoExiste = readline.questionInt("Desea agregar otro/s productos de la categoria ", categoria, "al pedido? - Ingrese: si:1 (o cualquier otro numero para salir de categoria.)"
+                    )
                 }
             })
         }
         return this.pedido;
     }
 
-//------------------------------------------------------------------------------------------
-    public enviarProductos_a_sucursal(sucursalDestino:Sucursal,pedido){
-        sucursalDestino.getProductosDisponibles().push(pedido);
+    //------------------------------------------------------------------------------------------
+    public enviarProductos_a_sucursal(sucursalDestino: Sucursal, pedido: Producto[][]) {
+        pedido.forEach(paq => {
+            paq.forEach(prod => {
+                sucursalDestino.getProductosDisponibles().push(prod);
+                console.log("PRODUCTO : ", prod.getNombreProd(), " ENVIADO A SUCURSAL : --", sucursalDestino.getNombreSucursal());
+            })
+        })
     }
 
 
-//---getters-setters
+    //---getters-setters
     public getNombreProveedor() {
         return this.nombre;
     }

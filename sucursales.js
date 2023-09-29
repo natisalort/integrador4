@@ -13,12 +13,28 @@ var Sucursal = /** @class */ (function () {
         this.productosDisponibles_en_sucursal = [];
     }
     //-----------------------------------------------------------------------------------------------------------------------
+    //Esta funcion sera utilizada cada vez que se necesite pedir ingresar un numero por teclado. Asegura el ingreso de un entero.
+    Sucursal.prototype.ingresar_checkearnumero = function () {
+        var cantidad = 0;
+        while (cantidad == 0) {
+            var cantidadSolicitada = readline.questionInt("INGRESE NUMERO :");
+            if (cantidadSolicitada !== undefined) {
+                cantidad = Math.floor(cantidadSolicitada);
+            }
+            else {
+                console.log("Entrada no válida. Debe ingresar un número entero.");
+                cantidad = 0;
+            }
+        }
+        return cantidad;
+    };
+    //----------------------------------------------------------------------------------------------------------------------
     Sucursal.prototype.mostrarProductos = function () {
         console.log("************************************************");
-        console.log("       **PRODUCTOS DISPONIBLES EN SUCURSAL : ");
+        console.log("       **PRODUCTOS DISPONIBLES EN SUCURSAL : ", this.getNombreSucursal());
         console.log("************************************************");
-        this.productosDisponibles_en_sucursal.forEach(function (producto) {
-            console.log("          ", producto.getNombreProd());
+        this.getProductosDisponibles().forEach(function (producto) {
+            console.log("          ", producto.getNombreProd);
             console.log("----", producto.getDescripcion());
             console.log("----Precio por unidad : $", producto.getPrecio());
             console.log("----Cantidad disponible : ", producto.getCantidadDisponible());
@@ -33,7 +49,8 @@ var Sucursal = /** @class */ (function () {
         nombreDueno = nombreDueno.charAt(0).toUpperCase() + nombreDueno.slice(1);
         var apellidoDueno = readline.question("  *Apellido : ");
         apellidoDueno = apellidoDueno.charAt(0).toUpperCase() + apellidoDueno.slice(1);
-        var telefonoDueno = readline.questionInt("  *Telefono  :");
+        console.log("  *Telefono ");
+        var telefonoDueno = this.ingresar_checkearnumero();
         var direccionDueno = readline.question("  *Direccion  :");
         direccionDueno = direccionDueno.charAt(0).toUpperCase() + direccionDueno.slice(1);
         var idAsignado = 0;
@@ -52,7 +69,7 @@ var Sucursal = /** @class */ (function () {
     };
     Sucursal.prototype.mostrarListaClientes = function () {
         console.log("------------------------------------------------------------------");
-        console.log("            LISTA DE CLIENTES DE LA SUCURSAL : ", this.getNombreSucursal());
+        console.log("            LISTA DE CLIENTES DE LA SUCURSAL : " + this.nombreSucursal);
         console.log("-----------------------------------------------------------------");
         this.clientes.forEach(function (cliente) {
             console.log("--Nombre de cliente : ", cliente.getNombreCliente(), ", ", cliente.getApellidoCliente());

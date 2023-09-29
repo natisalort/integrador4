@@ -2,42 +2,45 @@
 import * as readline from "readline-sync";
 
 export class Producto {
-    private nombreProd: string;
-    private descripcion: string;
+    public nombreProd: string;
+    public descripcion: string;
     private precio: number
     private categoria: string;
     private cantidad: number;
 
-    constructor(nombreProd: string, descripcion: string, categoria: string, precio: number, cantidad: number) {
+    public constructor(nombreProd: string, descripcion: string, categoria: string, precio: number, cantidad: number) {
         this.nombreProd = nombreProd;
         this.descripcion = descripcion;
         this.categoria = categoria; this.precio = precio;
         this.cantidad = cantidad;
     }
 
-    getNombreProd() {
+    public getNombreProd(): string {
         return this.nombreProd;
     }
-    getCategoria(){
+    public getCategoria(): string {
         return this.categoria;
     }
-    getDescripcion() {
+    public getDescripcion(): string {
         return this.descripcion;
     }
 
-    getPrecio() {
+    public getPrecio(): number {
         return this.precio;
     }
-    getCantidadDisponible() {
+    public getCantidadDisponible(): number {
         return this.cantidad;
     }
-    setAgregarProductos(num: number) {
+    public setAgregarProductos(num: number): number {
         this.cantidad += num;
+        return this.cantidad;
     }
-    setModificarCantidad(num: number){
-        this.cantidad=num;
+    public setModificarCantidad(num: number) {
+        this.cantidad = num;
+
     }
-    setRestarProductos(num:number){
-        this.cantidad-=num;
+    public setRestarProductos(num: number): number {
+        this.cantidad -= num;
+        return this.cantidad;
     }
 }
