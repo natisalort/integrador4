@@ -4,27 +4,30 @@ import { Producto } from "./productos";
 import { Proveedor } from "./proveedores";
 import { Veterinarias } from "./veterinarias";
 import { Cliente } from "./clientes";
-import { Paciente } from "./paciente";
+import { Paciente } from "./pacientes";
 
 export class Sucursal {
     protected nombreSucursal: string;
-    public idSucursal: number;
+    public id: number;
     private direccion: string;
     private telefono: number;
-    productosDisponibles_en_sucursal: Producto[];
+    public productosDisponibles_en_sucursal: Producto[];
     clientes: Cliente[];
 
     constructor(nombreSucursal: string, direccion: string, telefono: number, idSucursal: number) {
         this.nombreSucursal = nombreSucursal;
         this.direccion = direccion;
         this.telefono = telefono;
-        this.idSucursal = idSucursal;
+        this.id = idSucursal;
         this.clientes = [];
         this.productosDisponibles_en_sucursal = [];
     }
     //-----------------------------------------------------------------------------------------------------------------------
 
     public mostrarProductos() {
+        console.log("************************************************")
+        console.log("       **PRODUCTOS DISPONIBLES EN SUCURSAL : ");
+        console.log("************************************************")
         this.productosDisponibles_en_sucursal.forEach(producto => {
             console.log("          ", producto.getNombreProd());
             console.log("----", producto.getDescripcion());
@@ -85,7 +88,7 @@ export class Sucursal {
 
 
     getIdSucursal() {
-        return this.idSucursal;
+        return this.id;
     }
     getNombreSucursal() {
         return this.nombreSucursal;
@@ -102,5 +105,8 @@ export class Sucursal {
     }
     getProductosDisponibles() {
         return this.productosDisponibles_en_sucursal;
+    }
+    public setAgregarProductos(pedido){
+        this.productosDisponibles_en_sucursal.push(pedido);
     }
 }

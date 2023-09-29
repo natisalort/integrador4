@@ -4,7 +4,7 @@ import { Producto } from "./productos";
 import { Proveedor } from "./proveedores";
 import { Veterinarias } from "./veterinarias";
 import { Cliente } from "./clientes";
-import { Paciente } from "./paciente";
+import { Paciente } from "./pacientes";
 
 //Aqui implementamos la clase "Veterinarias" :
 let miVeterinaria: Veterinarias = new Veterinarias();
@@ -20,14 +20,19 @@ miVeterinaria.crearSucursal("Cerro", "La libertad 2569", 152835959);
 miVeterinaria.crearSucursal("Jardin", "Nores Martinez 3500", 152835959);
 miVeterinaria.crearSucursal("Alberdi", "Olegario Correa 1478", 152835959);
 //--------------------------------------------------------------------------
-miVeterinaria.agregarProductosAlCatalogo();  //Aqui cargamos los productos en sus categorias correspondientes.
-console.log("");
+console.log("---------------------------------------------------------");
+console.log("Contrataremos nuevos proveedores: (3) ");
+console.log("---------------------------------------------------------");
+miVeterinaria.crearProveedor();
+miVeterinaria.crearProveedor();
+miVeterinaria.crearProveedor();
+console.log("**********************************************************");
+miVeterinaria.mostrarListaProveedores(miVeterinaria.getProveedores());
+
 //----------------------------------------------------------------------------------------
 
 console.log("---------------------------------------------------------");
 console.log("Enviaremos productos de distintas categorias a sucursal  :  ");
-console.log("---------------------------------------------------------");
-console.log("            NUMERO ID DE CADA SUCURSAL :    ");
 console.log("---------------------------------------------------------");
 miVeterinaria.mostrarIdDeSucursales();
 console.log("");

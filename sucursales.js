@@ -8,12 +8,15 @@ var Sucursal = /** @class */ (function () {
         this.nombreSucursal = nombreSucursal;
         this.direccion = direccion;
         this.telefono = telefono;
-        this.idSucursal = idSucursal;
+        this.id = idSucursal;
         this.clientes = [];
         this.productosDisponibles_en_sucursal = [];
     }
     //-----------------------------------------------------------------------------------------------------------------------
     Sucursal.prototype.mostrarProductos = function () {
+        console.log("************************************************");
+        console.log("       **PRODUCTOS DISPONIBLES EN SUCURSAL : ");
+        console.log("************************************************");
         this.productosDisponibles_en_sucursal.forEach(function (producto) {
             console.log("          ", producto.getNombreProd());
             console.log("----", producto.getDescripcion());
@@ -66,7 +69,7 @@ var Sucursal = /** @class */ (function () {
         });
     };
     Sucursal.prototype.getIdSucursal = function () {
-        return this.idSucursal;
+        return this.id;
     };
     Sucursal.prototype.getNombreSucursal = function () {
         return this.nombreSucursal;
@@ -82,6 +85,9 @@ var Sucursal = /** @class */ (function () {
     };
     Sucursal.prototype.getProductosDisponibles = function () {
         return this.productosDisponibles_en_sucursal;
+    };
+    Sucursal.prototype.setAgregarProductos = function (pedido) {
+        this.productosDisponibles_en_sucursal.push(pedido);
     };
     return Sucursal;
 }());

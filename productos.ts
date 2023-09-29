@@ -18,7 +18,9 @@ export class Producto {
     getNombreProd() {
         return this.nombreProd;
     }
-
+    getCategoria(){
+        return this.categoria;
+    }
     getDescripcion() {
         return this.descripcion;
     }
@@ -31,5 +33,11 @@ export class Producto {
     }
     setAgregarProductos(num: number) {
         this.cantidad += num;
+    }
+    setModificarCantidad(num: number){
+        this.cantidad=num;
+    }
+    setRestarProductos(num:number){
+        this.cantidad-=num;
     }
 }
