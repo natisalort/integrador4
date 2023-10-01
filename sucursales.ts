@@ -106,26 +106,37 @@ export class Sucursal {
     }
 
 
-    getIdSucursal(): number {
+    public getIdSucursal(): number {
         return this.id;
     }
-    getNombreSucursal(): string {
+    public getNombreSucursal(): string {
         return this.nombreSucursal;
     }
 
-    getDireccionSucursal(): string {
+    public getDireccionSucursal(): string {
         return this.direccion;
     }
-    getTelefono(): number {
+   
+    public getTelefonoSucursal(): number {
         return this.telefono;
     }
-    getClientes(): Cliente[] {
+
+    public getClientes(): Cliente[] {
         return this.clientes;
     }
-    getProductosDisponibles(): Producto[] {
+    public getProductosDisponibles(): Producto[] {
         return this.productosDisponibles_en_sucursal;
     }
     public setAgregarProductos(pedido) {
         this.productosDisponibles_en_sucursal.push(pedido);
+    }
+    public setNombreSucursal(nombre:string){
+        this.nombreSucursal=nombre;
+    }
+    public setTelefonoSucursal(telefono:number){
+        this.telefono=telefono;
+    }
+    public setDireccionSucursal(nombre:string){
+        this.direccion=nombre;
     }
 }

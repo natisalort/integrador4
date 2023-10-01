@@ -43,7 +43,8 @@ var Cliente = /** @class */ (function () {
             switch (opcion) {
                 case 1:
                     this.setVisita();
-                    if (this.visitas >= 5) {
+                    console.log("VISITA REGISTRADA !!!");
+                    if (this.visitas >= 4) {
                         console.log("       FELICIDADES SE HA CONVERTIDO EN UN CLIENTE VIP !!!");
                         this.vip = true;
                     }
@@ -72,12 +73,6 @@ var Cliente = /** @class */ (function () {
                     break;
             }
             otraModificacion = readline.questionInt("**DESEA REALIZAR OTRA MODIFICACION A ESTE CLIENTE?- 1:si (o cualquier numero para salir)");
-        }
-    };
-    Cliente.prototype.crearVIP = function (visitas) {
-        if (visitas >= 5) {
-            this.vip = true;
-            console.log("FELICIDADES!!... AHORA ES UN CLIENTE VIP.");
         }
     };
     Cliente.prototype.getIdCliente = function () {

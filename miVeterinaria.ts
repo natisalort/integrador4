@@ -25,13 +25,16 @@ console.log("---------------------------------------------------------");
 console.log("CONTRATAREMOS NUEVOS PROVEEDORES: (3) ");
 console.log("---------------------------------------------------------");
 miVeterinaria.crearProveedor();
-miVeterinaria.crearProveedor();
-miVeterinaria.crearProveedor();
+//miVeterinaria.crearProveedor();
+//miVeterinaria.crearProveedor();
 console.log("**********************************************************");
-miVeterinaria.mostrarListaProveedores(miVeterinaria.getProveedores());
 
-//----------------------------------------------------------------------------------------
 
+console.log("**********************************************************");
+console.log("       **      MODIFICAR PROVEEDOR      **");
+console.log("**********************************************************");
+miVeterinaria.modificarProveedor();
+//---------------------------------------------------------------------------------------
 console.log("---------------------------------------------------------");
 console.log("ENVIAREMOS PRODUCTOS DE DISTINTAS CATEGORIAS A SUCURSAL  :  ");
 console.log("---------------------------------------------------------");
@@ -41,14 +44,12 @@ console.log("-------------------------------------------------------------");
 miVeterinaria.enviarProductos_a_sucursal();
 console.log("-------------------------------------------------------------");
 //--------------------------------------------------------------------------------------------------
-
 console.log("**********************************************************");
 console.log(" ** CREAREMOS UN NUEVO CLIENTE EN LA SUCURSAL DESEADA  **");
 console.log("**********************************************************");
 miVeterinaria.mostrarSucursales();
 console.log("******************************************************");
 miVeterinaria.buscarSucursal_por_Id().crearCliente();
-
 //--------------------------------------------------------------------------------------
 console.log("**********************************************************");
 console.log("       **      MODIFICAR CLIENTE       **");
@@ -69,15 +70,12 @@ while (clienteExiste == false) {
 }
 
 miVeterinaria.traerCliente(nombre, apellido).modificarCliente(miVeterinaria);
-
-
 //---------------------------------------------------------------------------------------
 console.log("*********************************************************************");
-console.log("           ** ELIMINAREMOS LA SUCURSAL DESEADA  **");
+console.log("           ** MODIFICAR SUCURSAL **");
 console.log("***********************************************************************");
-miVeterinaria.mostrarIdDeSucursales();
-miVeterinaria.eliminarSucursal();  //----Aqui eliminamos una sucursal seleccionada.
-miVeterinaria.mostrarSucursales();  //Mostramos la lista de sucursales actualizada.
+ 
+miVeterinaria.modificarSucursal() ; //Mostramos la lista de sucursales actualizada.
 
 
 

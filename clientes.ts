@@ -62,7 +62,10 @@ export class Cliente {
                     this.setVisita();
                     console.log("VISITA REGISTRADA !!!")
                     if (this.visitas >= 4) {
+                        console.log("------------------------------------------------------------------------");
                         console.log("       FELICIDADES SE HA CONVERTIDO EN UN CLIENTE VIP !!!");
+                        console.log("------------------------------------------------------------------------");
+
                         this.vip = true;
                     }
                     break;

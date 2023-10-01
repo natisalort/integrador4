@@ -43,16 +43,27 @@ var Veterinarias = /** @class */ (function () {
     Veterinarias.prototype.ingresarCheckearNumero = function () {
         var cantidad = 0;
         while (cantidad == 0) {
-            var cantidadSolicitada = readline.questionInt("INGRESE LA  OPCION :");
+            var cantidadSolicitada = readline.questionInt("  **INGRESE LA  OPCION :  ");
+            console.log("****************************************************************");
             if (cantidadSolicitada !== undefined) {
                 cantidad = Math.floor(cantidadSolicitada);
             }
             else {
-                console.log("Entrada no válida. Debe ingresar un número entero.");
+                console.log("Entrada no válida. Debe ingresar un número correcto.");
                 cantidad = 0;
             }
         }
         return cantidad;
+    };
+    Veterinarias.prototype.ingresar_ChekearCategoria = function () {
+        var categoriaIngresada = "";
+        while (categoriaIngresada == "") {
+            categoriaIngresada = readline.question("**INGRESE LA CATEGORIA  : Alimentos , Higiene o Salud----").toLowerCase();
+            if (categoriaIngresada != "alimentos" && categoriaIngresada != "higiene" && categoriaIngresada != "salud") {
+                categoriaIngresada = "";
+            }
+        }
+        return categoriaIngresada;
     };
     //-----------------------
     Veterinarias.prototype.crearProveedor = function () {
@@ -100,15 +111,76 @@ var Veterinarias = /** @class */ (function () {
     };
     Veterinarias.prototype.mostrarListaProveedores = function (array) {
         console.log("------------------------------------------------------------------");
-        console.log("            LISTA DE PROVEEDORES (contratados): ");
+        console.log("            LISTA DE PROVEEDORES  : ");
         console.log("-----------------------------------------------------------------");
         array.forEach(function (item) {
             console.log("--Nombre del proveedor: ", item.getNombreProveedor());
             console.log("--ID del proveedor: ", item.getIdProveedor());
             console.log("--Telefono del proveedor: ", item.getTelefonoProveedor());
             console.log("--Rubro: ", item.getRubroProveedor());
-            console.log("*****************************************************");
+            console.log("      ------------------------------------------");
         });
+    };
+    Veterinarias.prototype.modificarProveedor = function () {
+        var _this = this;
+        this.mostrarListaProveedores(this.proveedores);
+        var proveedorElegido = this.traerProveedor();
+        var otraModificacion = 1;
+        while (otraModificacion == 1) {
+            console.log("          Desea modificar? presione 1.");
+            console.log("      < ---------------------------------- >          ");
+            console.log("      Desea eliminar proveedor? presione 2.");
+            var opcionSeleccionada1 = 0;
+            while (opcionSeleccionada1 < 1 || opcionSeleccionada1 > 2) {
+                var accion = this.ingresarCheckearNumero();
+                opcionSeleccionada1 = accion;
+            }
+            if (opcionSeleccionada1 == 1) {
+                console.log("------------------------------------------------------------------------");
+                console.log("INGRESE OPCION A MODIFICAR : ");
+                console.log("       -Modificar Nombre de proveedor:  -Ingrese 1.");
+                console.log("       -ModificarTelefono de proveedor:  -Ingrese 2.");
+                console.log("       -Modificar Direccion de proveedor:  -Ingrese 3.");
+                console.log("       -Agregar rubro a proveedor:  -Ingrese 4.");
+                console.log("       -Eliminar rubro de proveedor:  -Ingrese 5.");
+                console.log("------------------------------------------------------------------------");
+                var OPCIONES = {
+                    1: function () { return proveedorElegido.setNombreProveedor(readline.question("INGRESE NUEVO NOMBRE DE PROVEEDOR : ")); },
+                    2: function () { return proveedorElegido.setTelefonoProveedor(readline.questionInt("INGRESE NUEVO TELEFONO DE PROVEEDOR : ")); },
+                    3: function () { return proveedorElegido.setDireccionProveedor(readline.question("INGRESE NUEVA DIRECCION DE PROVEEDOR : ")); },
+                    4: function () { return proveedorElegido.setRubroProveedor(_this.ingresar_ChekearCategoria()); },
+                    5: function () {
+                        var rubro_a_eliminar = _this.ingresar_ChekearCategoria();
+                        proveedorElegido.getRubroProveedor().forEach(function (rubro) {
+                            if (rubro == rubro_a_eliminar) {
+                                proveedorElegido.getRubroProveedor().splice(proveedorElegido.getRubroProveedor().indexOf(rubro), 1);
+                                console.log("------------------------------------------------------------------------");
+                                console.log("    !!!!Se ha eliminado el rubro  ", rubro, "del proveedor ", proveedorElegido.getNombreProveedor());
+                                console.log("------------------------------------------------------------------------");
+                            }
+                        });
+                    }
+                };
+                var opcionModificacion2 = 0;
+                while (opcionModificacion2 > 5 || opcionModificacion2 < 1) {
+                    opcionModificacion2 = this.ingresarCheckearNumero();
+                }
+                OPCIONES[opcionModificacion2](); //Aqui llama a ejecutar
+                console.log("          Cambios establecidos en proveedor :", proveedorElegido.getNombreProveedor());
+                console.log("          Nombre :", proveedorElegido.getNombreProveedor());
+                console.log("          Telefono :", proveedorElegido.getTelefonoProveedor());
+                console.log("          Direccion :", proveedorElegido.getDireccionProveedor());
+                console.log("          Rubro/s :", proveedorElegido.getRubroProveedor());
+            }
+            if (opcionSeleccionada1 == 2) {
+                this.proveedores.splice(this.proveedores.indexOf(proveedorElegido, 1));
+                this.mostrarListaProveedores(this.getProveedores());
+                console.log("!!!Se elimino de la lista de proveedores a ", proveedorElegido.getNombreProveedor());
+                break;
+            }
+            console.log("Desea realizar otra modificacin a este proveedor? - SI:ingrese 1. (o presione cualquier otro numero para terminar)");
+            otraModificacion = this.ingresarCheckearNumero();
+        }
     };
     //--------------------------------------------------------------------------------------------------
     Veterinarias.prototype.crearSucursal = function (nombreSucursal, direccion, telefono) {
@@ -191,7 +263,7 @@ var Veterinarias = /** @class */ (function () {
         });
         return sucursalElegida;
     };
-    Veterinarias.prototype.traerProveedor = function (lista) {
+    Veterinarias.prototype.traerProveedor = function () {
         var proveedorExiste = false;
         var proveedorSeleccionado = 0;
         while (proveedorExiste == false) {
@@ -208,7 +280,8 @@ var Veterinarias = /** @class */ (function () {
         var categoriaDelEnvio = "";
         var nuevoEnvio = false;
         while (nuevoEnvio == false) {
-            categoriaDelEnvio = readline.question("INGRESE LA CATEGORIA DEL PRODUCTO QUE SE ENVIARA A SUCURSAL : ----", sucursalDestino.getNombreSucursal()).toLowerCase(); // Convierte todo el texto a minuscula.
+            console.log("INGRESE LA CATEGORIA DEL PRODUCTO QUE SE ENVIARA A SUCURSAL : ----", sucursalDestino.getNombreSucursal());
+            categoriaDelEnvio = this.ingresar_ChekearCategoria();
             this.proveedores.forEach(function (proveedor) {
                 proveedor.getRubroProveedor().forEach(function (rubro) {
                     if (rubro == categoriaDelEnvio) { //Si este proveedor tiene la categoria que deseo enviar
@@ -224,10 +297,11 @@ var Veterinarias = /** @class */ (function () {
         console.log("-----------------------------------------------------------------------------------");
         this.mostrarListaProveedores(elegirProveedor);
         console.log("-----------------------------------------------------------------------------------");
-        var proveedorElegido = this.traerProveedor(elegirProveedor);
+        var proveedorElegido = this.traerProveedor();
         pedido.push(proveedorElegido.generarPedido(categoriaDelEnvio));
         proveedorElegido.enviarProductos_a_sucursal(sucursalDestino, pedido);
-        console.log("PRODUCTOS DISPONIBLES EN SUCURSAL ", sucursalDestino.getNombreSucursal(), sucursalDestino.getProductosDisponibles());
+        sucursalDestino.mostrarProductos();
+        //console.log("PRODUCTOS DISPONIBLES EN SUCURSAL ", sucursalDestino.getNombreSucursal(), sucursalDestino.getProductosDisponibles());
     };
     Veterinarias.prototype.getSucursales = function () {
         return this.sucursales;

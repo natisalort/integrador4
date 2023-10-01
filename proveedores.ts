@@ -11,14 +11,14 @@ export class Proveedor {
     // atributos:
     private nombre: string;
     public id: number;
-    private telefono: number | undefined;
+    private telefono: number;
     private direccion: string;
     private rubros: string[];
     private catalogo: Producto[];
     private pedido: Producto[];
 
     // constructor:
-    constructor(nombreProveedor: string, idProveedor: number, telefonoProveedor: number | undefined, direccion: string, rubros) {
+    constructor(nombreProveedor: string, idProveedor: number, telefonoProveedor: number, direccion: string, rubros) {
         this.nombre = nombreProveedor;
         this.id = idProveedor;
         this.telefono = telefonoProveedor;
@@ -148,21 +148,43 @@ export class Proveedor {
     }
 
 
-    //---getters-setters
-    public getNombreProveedor() {
+    //---getters
+    public getNombreProveedor():string {
         return this.nombre;
     }
 
-    public getIdProveedor() {
+    public getIdProveedor():number {
         return this.id;
     }
 
-    public getTelefonoProveedor() {
+    public getTelefonoProveedor():number {
         return this.telefono;
     }
+    public getDireccionProveedor():string {
+        return this.direccion;
+    }
 
-    public getRubroProveedor() {
+    public getRubroProveedor():string[] {
         return this.rubros;
     }
+//----setters
+    public setNombreProveedor(nombre:string) {
+         this.nombre=nombre;
+    }
+
+    public setIdProveedor(num:number) {
+         this.id=num
+    }
+
+    public setTelefonoProveedor(num:number) {
+         this.telefono=num;
+    }
+
+    public setRubroProveedor(rubro:string) {
+         this.rubros.push(rubro);
+    }
+    public setDireccionProveedor(direccion:string) {
+        this.direccion=direccion;
+   }
 
 }

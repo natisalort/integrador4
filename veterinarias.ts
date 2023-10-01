@@ -53,15 +53,28 @@ export class Veterinarias {
     public ingresarCheckearNumero(): number {
         let cantidad = 0;
         while (cantidad == 0) {
-            let cantidadSolicitada: number | undefined = readline.questionInt("INGRESE LA  OPCION :");
+            let cantidadSolicitada: number | undefined = readline.questionInt("  **INGRESE LA  OPCION :  ");
+            console.log("****************************************************************")
+
             if (cantidadSolicitada !== undefined) {
                 cantidad = Math.floor(cantidadSolicitada);
             } else {
-                console.log("Entrada no válida. Debe ingresar un número entero.");
+                console.log("Entrada no válida. Debe ingresar un número correcto.");
                 cantidad = 0;
             }
         }
         return cantidad;
+    }
+
+    public ingresar_ChekearCategoria(): string {
+        let categoriaIngresada = "";
+        while (categoriaIngresada == "") {
+            categoriaIngresada = readline.question("**INGRESE LA CATEGORIA  : Alimentos , Higiene o Salud----").toLowerCase();
+            if (categoriaIngresada != "alimentos" && categoriaIngresada != "higiene" && categoriaIngresada != "salud") {
+                categoriaIngresada = "";
+            }
+        }
+        return categoriaIngresada;
     }
     //-----------------------
     public crearProveedor() {
@@ -113,9 +126,9 @@ export class Veterinarias {
         this.proveedores.push(new Proveedor(nombreProveedor, idAsignado, telefonoProveedor, direccion, rubros));//Creamos un proveedor con todos los datos obtenidos y directamente los guardamos en la lista de proveedores.
     }
 
-    public mostrarListaProveedores(array: Proveedor[]) {
+    public mostrarListaProveedores(array: Proveedor[]) {//Esta funcion puede mostrar la lista general de proveedores y tambien la lista que se genera al filtrar los proveedores segun sus rubros.
         console.log("------------------------------------------------------------------")
-        console.log("            LISTA DE PROVEEDORES (contratados): ");
+        console.log("            LISTA DE PROVEEDORES  : ");
         console.log("-----------------------------------------------------------------")
         array.forEach(item => {
             console.log("--Nombre del proveedor: ", item.getNombreProveedor());
@@ -123,8 +136,75 @@ export class Veterinarias {
 
             console.log("--Telefono del proveedor: ", item.getTelefonoProveedor());
             console.log("--Rubro: ", item.getRubroProveedor());
-            console.log("*****************************************************");
+            console.log("      ------------------------------------------");
         })
+    }
+    modificarProveedor() {
+
+        this.mostrarListaProveedores(this.proveedores);
+        let sucursalElegida = this.traerProveedor();
+        let otraModificacion = 1;
+
+        while (otraModificacion == 1) {
+            console.log("          Desea modificar? presione 1.");
+            console.log("      < ---------------------------------- >          ");
+            console.log("      Desea eliminar proveedor? presione 2.");
+            let opcionSeleccionada1 = 0;
+
+            while (opcionSeleccionada1 < 1 || opcionSeleccionada1 > 2) {
+                let accion = this.ingresarCheckearNumero();
+                opcionSeleccionada1 = accion;
+            }
+
+            if (opcionSeleccionada1 == 1) {
+                console.log("------------------------------------------------------------------------");
+                console.log("INGRESE OPCION A MODIFICAR : ");
+                console.log("       -Modificar Nombre de proveedor:  -Ingrese 1.")
+                console.log("       -ModificarTelefono de proveedor:  -Ingrese 2.");
+                console.log("       -Modificar Direccion de proveedor:  -Ingrese 3.");
+                console.log("       -Agregar rubro a proveedor:  -Ingrese 4.");
+                console.log("       -Eliminar rubro de proveedor:  -Ingrese 5.");
+                console.log("------------------------------------------------------------------------");
+                const OPCIONES = {
+                    1: () => sucursalElegida.setNombreProveedor(readline.question("INGRESE NUEVO NOMBRE DE PROVEEDOR : ")),
+                    2: () => sucursalElegida.setTelefonoProveedor(readline.questionInt("INGRESE NUEVO TELEFONO DE PROVEEDOR : ")),
+                    3: () => sucursalElegida.setDireccionProveedor(readline.question("INGRESE NUEVA DIRECCION DE PROVEEDOR : ")),
+                    4: () => sucursalElegida.setRubroProveedor(this.ingresar_ChekearCategoria()),
+                    5: () => {
+                        let rubro_a_eliminar = this.ingresar_ChekearCategoria();
+                        sucursalElegida.getRubroProveedor().forEach(rubro => {
+                            if (rubro == rubro_a_eliminar) {
+                                sucursalElegida.getRubroProveedor().splice(sucursalElegida.getRubroProveedor().indexOf(rubro), 1);
+                                console.log("------------------------------------------------------------------------");
+                                console.log("    !!!!Se ha eliminado el rubro  ", rubro, "del proveedor ", sucursalElegida.getNombreProveedor());
+                                console.log("------------------------------------------------------------------------");
+
+                            }
+                        })
+                    }
+                }
+                let opcionModificacion2 = 0;
+                while (opcionModificacion2 > 5 || opcionModificacion2 < 1) {
+                    opcionModificacion2 = this.ingresarCheckearNumero();
+                }
+                OPCIONES[opcionModificacion2](); //Aqui llama a ejecutar
+                console.log("          Cambios establecidos en proveedor :", sucursalElegida.getNombreProveedor());
+                console.log("          Nombre :", sucursalElegida.getNombreProveedor());
+                console.log("          Telefono :", sucursalElegida.getTelefonoProveedor());
+                console.log("          Direccion :", sucursalElegida.getDireccionProveedor());
+                console.log("          Rubro/s :", sucursalElegida.getRubroProveedor());
+
+            }
+
+            if (opcionSeleccionada1 == 2) {
+                this.proveedores.splice(this.proveedores.indexOf(sucursalElegida, 1));
+                this.mostrarListaProveedores(this.getProveedores());
+                console.log("!!!Se elimino de la lista de proveedores a ", sucursalElegida.getNombreProveedor());
+                break;
+            }
+            console.log("Desea realizar otra modificacin a este proveedor? - SI:ingrese 1. (o presione cualquier otro numero para terminar)");
+            otraModificacion = this.ingresarCheckearNumero();
+        }
     }
     //--------------------------------------------------------------------------------------------------
     public crearSucursal(nombreSucursal: string, direccion: string, telefono: number) {
@@ -149,7 +229,7 @@ export class Veterinarias {
         this.sucursales.forEach(e => {
             console.log("--Nombre de sucursal : --", e.getNombreSucursal());
             console.log("--Direccion : --", e.getDireccionSucursal());
-            console.log("--Telefono : --", e.getTelefono());
+            console.log("--Telefono : --", e.getTelefonoSucursal());
             console.log("--ID : --", e.getIdSucursal());
             console.log("-----------------------------------------------------")
         });
@@ -192,8 +272,61 @@ export class Veterinarias {
         let sucursalEliminada = this.getSucursales()[indice].getNombreSucursal()
         this.getSucursales().splice(indice, 1);
         console.log("      !! SE HA ELIMINADO LA SUCURSAL : ", sucursalEliminada);
-
     }
+
+//--------------------------------------------------------------------------------------------------
+    modificarSucursal() {
+        this.mostrarSucursales();
+        let sucursalElegida = this.buscarSucursal_por_Id();
+        let otraModificacion = 1;
+
+        while (otraModificacion == 1) {
+            console.log("       Desea modificar sucursal? : presione 1.");
+            console.log("      < ---------------------------------- >          ");
+            console.log("      Desea eliminar sucursal? : presione 2.");
+            let opcionSeleccionada1 = 0;
+
+            while (opcionSeleccionada1 < 1 || opcionSeleccionada1 > 2) {
+                let accion = this.ingresarCheckearNumero();
+                opcionSeleccionada1 = accion;
+            }
+
+            if (opcionSeleccionada1 == 1) {
+                console.log("------------------------------------------------------------------------");
+                console.log("INGRESE OPCION A MODIFICAR : ");
+                console.log("       -Modificar Nombre de sucursal:  -Ingrese 1.")
+                console.log("       -ModificarTelefono de sucursal:  -Ingrese 2.");
+                console.log("       -Modificar Direccion de sucursal:  -Ingrese 3.");
+                console.log("------------------------------------------------------------------------");
+                const OPCIONES = {
+                    1: () => sucursalElegida.setNombreSucursal(readline.question("INGRESE NUEVO NOMBRE DE PROVEEDOR : ")),
+                    2: () => sucursalElegida.setTelefonoSucursal(readline.questionInt("INGRESE NUEVO TELEFONO DE PROVEEDOR : ")),
+                    3: () => sucursalElegida.setDireccionSucursal(readline.question("INGRESE NUEVA DIRECCION DE PROVEEDOR : ")),
+                    }
+    
+                let opcionModificacion2 = 0;
+                while (opcionModificacion2 > 5 || opcionModificacion2 < 1) {
+                    opcionModificacion2 = this.ingresarCheckearNumero();
+                }
+                OPCIONES[opcionModificacion2](); //Aqui llama a ejecutar
+                console.log("          Cambios establecidos en sucursal :", sucursalElegida.getNombreSucursal());
+                console.log("          Nombre :", sucursalElegida.getNombreSucursal());
+                console.log("          Telefono :", sucursalElegida.getTelefonoSucursal());
+                console.log("          Direccion :", sucursalElegida.getDireccionSucursal());
+            }
+
+            if (opcionSeleccionada1 == 2) {
+                this.getSucursales().splice(this.getSucursales().indexOf(sucursalElegida, 1));
+                this.mostrarSucursales();
+                console.log("!!!Se elimino de la lista de sucursales a ", sucursalElegida.getNombreSucursal());
+                break;
+            }
+            console.log("Desea realizar otra modificacin a este proveedor? - SI:ingrese 1. (o presione cualquier otro numero para terminar)");
+            otraModificacion = this.ingresarCheckearNumero();
+        }
+    }
+   
+    //-----------------------------------------------------------------------------------------------
 
     public chequearClienteExiste(nombre: string, apellido: string): boolean {
         let existe = false;
@@ -206,8 +339,7 @@ export class Veterinarias {
         })
         return existe;
     }
-
-
+//--------------------------------------------------------------------------------------------------
     public traerCliente(nombre: string, apellido: string): Cliente {
         let sucursalElegida: Cliente = new Cliente("", 0, "", "", 0, "", 0);
         this.sucursales.forEach(sucursal => {
@@ -220,8 +352,9 @@ export class Veterinarias {
         })
         return sucursalElegida;
     }
+//--------------------------------------------------------------------------------------------------
 
-    public traerProveedor(lista): Proveedor {
+    public traerProveedor(): Proveedor {
         let proveedorExiste = false;
         let proveedorSeleccionado = 0;
         while (proveedorExiste == false) {
@@ -236,12 +369,12 @@ export class Veterinarias {
     public enviarProductos_a_sucursal() {
         let sucursalDestino = this.buscarSucursal_por_Id();//Selecciona una sucursal y la trae para modificar su lista de productos disponibles.
         let elegirProveedor: Proveedor[] = []; //Aqui guardaremos los proveedores que tengan la categoria de productos que queremos enviar.
-        let pedido:Producto[][]=[];
+        let pedido: Producto[][] = [];
         let categoriaDelEnvio = "";
         let nuevoEnvio = false;
         while (nuevoEnvio == false) {
-
-            categoriaDelEnvio = readline.question("INGRESE LA CATEGORIA DEL PRODUCTO QUE SE ENVIARA A SUCURSAL : ----", sucursalDestino.getNombreSucursal()).toLowerCase();// Convierte todo el texto a minuscula.
+            console.log("INGRESE LA CATEGORIA DEL PRODUCTO QUE SE ENVIARA A SUCURSAL : ----", sucursalDestino.getNombreSucursal())
+            categoriaDelEnvio = this.ingresar_ChekearCategoria();
 
             this.proveedores.forEach(proveedor => {
                 proveedor.getRubroProveedor().forEach(rubro => {
@@ -260,15 +393,13 @@ export class Veterinarias {
 
         this.mostrarListaProveedores(elegirProveedor);
         console.log("-----------------------------------------------------------------------------------");
-        let proveedorElegido = this.traerProveedor(elegirProveedor);
-        pedido.push(proveedorElegido.generarPedido(categoriaDelEnvio));
-        proveedorElegido.enviarProductos_a_sucursal(sucursalDestino, pedido);
-        console.log("PRODUCTOS DISPONIBLES EN SUCURSAL ", sucursalDestino.getNombreSucursal(), sucursalDestino.getProductosDisponibles());
+        let sucursalElegida = this.traerProveedor();
+        pedido.push(sucursalElegida.generarPedido(categoriaDelEnvio));
+        sucursalElegida.enviarProductos_a_sucursal(sucursalDestino, pedido);
+        sucursalDestino.mostrarProductos()
+        //console.log("PRODUCTOS DISPONIBLES EN SUCURSAL ", sucursalDestino.getNombreSucursal(), sucursalDestino.getProductosDisponibles());
 
     }
-
-
-
 
     public getSucursales() {
         return this.sucursales;

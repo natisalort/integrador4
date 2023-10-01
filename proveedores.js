@@ -120,7 +120,7 @@ var Proveedor = /** @class */ (function () {
             });
         });
     };
-    //---getters-setters
+    //---getters
     Proveedor.prototype.getNombreProveedor = function () {
         return this.nombre;
     };
@@ -130,8 +130,27 @@ var Proveedor = /** @class */ (function () {
     Proveedor.prototype.getTelefonoProveedor = function () {
         return this.telefono;
     };
+    Proveedor.prototype.getDireccionProveedor = function () {
+        return this.direccion;
+    };
     Proveedor.prototype.getRubroProveedor = function () {
         return this.rubros;
+    };
+    //----setters
+    Proveedor.prototype.setNombreProveedor = function (nombre) {
+        this.nombre = nombre;
+    };
+    Proveedor.prototype.setIdProveedor = function (num) {
+        this.id = num;
+    };
+    Proveedor.prototype.setTelefonoProveedor = function (num) {
+        this.telefono = num;
+    };
+    Proveedor.prototype.setRubroProveedor = function (rubro) {
+        this.rubros.push(rubro);
+    };
+    Proveedor.prototype.setDireccionProveedor = function (direccion) {
+        this.direccion = direccion;
     };
     return Proveedor;
 }());

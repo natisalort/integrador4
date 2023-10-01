@@ -20,11 +20,14 @@ console.log("---------------------------------------------------------");
 console.log("CONTRATAREMOS NUEVOS PROVEEDORES: (3) ");
 console.log("---------------------------------------------------------");
 miVeterinaria.crearProveedor();
-miVeterinaria.crearProveedor();
-miVeterinaria.crearProveedor();
+//miVeterinaria.crearProveedor();
+//miVeterinaria.crearProveedor();
 console.log("**********************************************************");
-miVeterinaria.mostrarListaProveedores(miVeterinaria.getProveedores());
-//----------------------------------------------------------------------------------------
+console.log("**********************************************************");
+console.log("       **      MODIFICAR PROVEEDOR      **");
+console.log("**********************************************************");
+miVeterinaria.modificarProveedor();
+//---------------------------------------------------------------------------------------
 console.log("---------------------------------------------------------");
 console.log("ENVIAREMOS PRODUCTOS DE DISTINTAS CATEGORIAS A SUCURSAL  :  ");
 console.log("---------------------------------------------------------");
